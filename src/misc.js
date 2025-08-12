@@ -5,6 +5,8 @@ LoginButton.src = "https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkY
 BodyElement.appendChild(LoginButton);
 
 window.addEventListener('message',function(e){
+    console.log("recieved!");
+    console.log(e);
     switch (e.data.action){
         case 'SyncMessage':
             sessionID = e.data.message;
