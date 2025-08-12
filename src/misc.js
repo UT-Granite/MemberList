@@ -1,13 +1,12 @@
 const BodyElement = document.getElementsByTagName('body')[0];
 let sessionID;
-
+let userHash;
 
 window.addEventListener('message',function(e){
-    console.log("recieved!");
-    console.log(e);
     switch (e.data.action){
         case 'sessionID':
             sessionID = e.data.message;
+            userHash = e.data.userHash;
             let sessionID_info = document.createElement('p1');
             sessionID_info.textContent = sessionID;
             BodyElement.appendChild(sessionID_info);
