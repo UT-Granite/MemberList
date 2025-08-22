@@ -121,6 +121,7 @@ function displayForm(user_name,icon_url){
         startY = e.offsetY - offsetY;
     });
     icon_canvas.addEventListener('touchstart',(e)=>{
+        e.preventDefault();
         isDragging = true;
         startX = e.touches[0].pageX - offsetX;
         startY = e.touches[0].pageY - offsetY;
@@ -133,6 +134,7 @@ function displayForm(user_name,icon_url){
         }
     });
     icon_canvas.addEventListener('touchmove',(e)=>{
+        e.preventDefault();
         if (isDragging){
             offsetX = e.changedTouches[0].pageX - startX;
             offsetY = e.changedTouches[0].pageY - startY;
@@ -145,6 +147,7 @@ function displayForm(user_name,icon_url){
     icon_canvas.addEventListener('touchcancel',()=>isDragging=false);
     
     icon_canvas.addEventListener('wheel',(e)=>{
+        e.preventDefault();
         scale += -e.deltaY*0.0005;
         if(scale < 0.01){
             scale = 0.01;
