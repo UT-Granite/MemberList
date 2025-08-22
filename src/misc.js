@@ -19,7 +19,7 @@ window.addEventListener('message',function(e){
                         const user_name = data.name;
                         let user_nameElem = this.document.createElement('button');
                         user_nameElem.textContent = `${user_name}さんの情報を記入する。`;
-                        user_nameElem.onclick = ()=>displayForm(user_name); 
+                        user_nameElem.onclick = ()=>{displayForm(user_name);}; 
                         HeaderElement.appendChild(user_nameElem);
                     }else{
                         let errElem = this.document.createElement('button');
