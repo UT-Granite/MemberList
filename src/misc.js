@@ -50,8 +50,8 @@ try{
     },'*');
     
 }catch (e){
-    displayLogin();
-    //displayForm("あああ",null);
+    //displayLogin();
+    displayForm("あああ",null);
 }
 
 
@@ -67,6 +67,11 @@ function displayForm(user_name,icon_url){
     clearMain();
     const icon_canvas = document.createElement('canvas');
     let squere_length = Math.min(200,window.innerWidth);
+    let offsetX = 0;
+    let offsetY = 0;
+    let isDragging = false;
+    let startX,startY;
+    let scale = 1;
     icon_canvas.width = squere_length;
     icon_canvas.height = squere_length;
     const icon_image = new Image();
@@ -75,17 +80,30 @@ function displayForm(user_name,icon_url){
     }else{
         icon_image.src = icon_url;
     }
+    const context = icon_canvas.getContext("2d");
     icon_image.onload = () => {
-        const context = icon_canvas.getContext("2d");
+        offsetX = 0;
+        offsetY = 0;
+        drawImage()
+    }
+
+    function drawImage(){
         const min_edge = Math.min(icon_image.width,icon_image.height);
-        context.drawImage(icon_image,0,0,icon_canvas.width*icon_image.width/min_edge,icon_canvas.height*icon_image.height/min_edge);
+        const img_width = icon_canvas.width*icon_image.width/min_edge;
+        const img_height = icon_canvas.height*icon_image.height/min_edge;
+        let x = (icon_canvas.width - scale*img_width)/2 + offsetX;
+        let y = (icon_canvas.height - scale*img_height)/2 + offsetY;
+        x = climp(x,-img_width,img_width);
+        y = climp(y,-img_height,img_height);
+        context.clearRect(0,0,icon_canvas.width,icon_canvas.height);
+        context.drawImage(icon_image,x,y,scale*img_width,scale*img_height);
     }
 
     const file_select_button = document.createElement('label');
     file_select_button.textContent = "画像の変更";
     const file_selector = document.createElement('input');
     file_selector.type = "file";
-    file_selector.accept = ".png,.jpeg,.jpg"
+    file_selector.accept = ".png,.jpeg,.jpg,.HEIC"
     file_selector.style.display = "none";
     file_selector.addEventListener("change",(e) => {
         const image_file = e.target.files;
@@ -96,6 +114,43 @@ function displayForm(user_name,icon_url){
         }
     });
     file_select_button.appendChild(file_selector);
+
+    icon_canvas.addEventListener('mousedown',(e)=>{
+        isDragging = true;
+        startX = e.offsetX - offsetX;
+        startY = e.offsetY - offsetY;
+    });
+    icon_canvas.addEventListener('touchstart',(e)=>{
+        isDragging = true;
+        startX = e.touches[0].pageX - offsetX;
+        startY = e.touches[0].pageY - offsetY;
+    });
+    icon_canvas.addEventListener('mousemove',(e)=>{
+        if (isDragging){
+            offsetX = e.offsetX - startX;
+            offsetY = e.offsetY - startY;
+            drawImage();
+        }
+    });
+    icon_canvas.addEventListener('touchmove',(e)=>{
+        if (isDragging){
+            offsetX = e.changedTouches[0].pageX - startX;
+            offsetY = e.changedTouches[0].pageY - startY;
+            drawImage();
+        }
+    });
+    icon_canvas.addEventListener('mouseleave',()=> isDragging = false);
+    icon_canvas.addEventListener('mouseup',()=>isDragging=false);
+    icon_canvas.addEventListener('touchend',()=>isDragging=false);
+    icon_canvas.addEventListener('touchcancel',()=>isDragging=false);
+    
+    icon_canvas.addEventListener('wheel',(e)=>{
+        scale += -e.deltaY*0.0005;
+        if(scale < 0.01){
+            scale = 0.01;
+        }
+        drawImage();
+    })
 
     MainElement.appendChild(icon_canvas);
     MainElement.appendChild(file_select_button);
@@ -188,4 +243,14 @@ function createGradeForm(){
         grade_form.appendChild(list_elm); 
     }
     MainElement.appendChild(grade_form);
+}
+
+function climp(x,min,max){
+    if(x < min){
+        return min;
+    }else if(x > max){
+        return max;
+    }else{
+        return x;
+    }
 }
