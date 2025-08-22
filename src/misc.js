@@ -77,10 +77,28 @@ function displayForm(user_name,icon_url){
     }
     icon_image.onload = () => {
         const context = icon_canvas.getContext("2d");
-        context.drawImage(icon_image,0,0,icon_canvas.width,icon_canvas.height);
+        const min_edge = Math.min(icon_image.width,icon_image.height);
+        context.drawImage(icon_image,0,0,icon_canvas.width*icon_image.width/min_edge,icon_canvas.height*icon_image.height/min_edge);
     }
 
+    const file_select_button = document.createElement('label');
+    file_select_button.textContent = "画像の変更";
+    const file_selector = document.createElement('input');
+    file_selector.type = "file";
+    file_selector.accept = ".png,.jpeg,.jpg"
+    file_selector.style.display = "none";
+    file_selector.addEventListener("change",(e) => {
+        const image_file = e.target.files;
+        const reader = new FileReader();
+        reader.readAsDataURL(image_file[0]);
+        reader.onload = () => {
+            icon_image.src = reader.result;
+        }
+    });
+    file_select_button.appendChild(file_selector);
+
     MainElement.appendChild(icon_canvas);
+    MainElement.appendChild(file_select_button);
 
     const real_name_form = document.createElement('input');
     real_name_form.type = "text";
