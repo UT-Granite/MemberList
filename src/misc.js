@@ -12,14 +12,16 @@ window.addEventListener('message',function(e){
             console.log(`sessionID:${sessionID}`);
             console.log(`userHash:${userHash}`);
 
-            fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?info=name&userHash=${userHash}&sessionID=${sessionID}`)
+            fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?nandi=name&userHash=${userHash}&sessionID=${sessionID}`)
                 .then((response)=>response.json())
                 .then((data)=>{
                     if (data.ok){
                         const user_name = data.name;
+                        const icon_url = data.icon;
+                        console.log(icon_url);
                         let user_nameElem = document.createElement('button');
                         user_nameElem.textContent = `${user_name}さんのプロフィールを記入する。`;
-                        user_nameElem.onclick = () => {displayForm(user_name);}; 
+                        user_nameElem.onclick = () => {displayForm(user_name,icon_url);}; 
                         HeaderElement.appendChild(user_nameElem);
                     }else{
                         let errElem = this.document.createElement('button');
@@ -42,7 +44,7 @@ try{
     
 }catch (e){
     displayLogin();
-    //displayForm("あああ");
+    //displayForm("あああ",null);
 }
 
 
@@ -54,28 +56,44 @@ function displayLogin(){
     MainElement.appendChild(LoginButton);
 }
 
-function displayForm(user_name){
+function displayForm(user_name,icon_url){
     clearMain();
+    const icon_canvas = document.createElement('canvas');
+    let squere_length = Math.min(200,window.innerWidth);
+    icon_canvas.width = squere_length;
+    icon_canvas.height = squere_length;
+    const icon_image = new Image();
+    if (icon_url == null){
+        icon_image.src = "src/img/noimage.jpg";
+    }else{
+        icon_image.src = icon_url;
+    }
+    icon_image.onload = () => {
+        const context = icon_canvas.getContext("2d");
+        context.drawImage(icon_image,0,0,icon_canvas.width,icon_canvas.height);
+    }
 
-    let real_name_form = document.createElement('input');
+    MainElement.appendChild(icon_canvas);
+
+    const real_name_form = document.createElement('input');
     real_name_form.type = "text";
     real_name_form.value = user_name;
     real_name_form.required = true;
     MainElement.appendChild(real_name_form);
 
-    let furigana_name_form = document.createElement('input');
+    const furigana_name_form = document.createElement('input');
     furigana_name_form.type = "text";
     furigana_name_form.value = "";
     MainElement.appendChild(furigana_name_form);
 
-    let nick_name_form = document.createElement('input');
+    const nick_name_form = document.createElement('input');
     nick_name_form.type = "text";
     nick_name_form.value = "";
     MainElement.appendChild(nick_name_form);
     
-    let generation_form = document.createElement('input');
+    const generation_form = document.createElement('input');
     generation_form.type = "number";
-    let date = new Date();
+    const date = new Date();
     const max_gen = date.getFullYear() - 2017;
     generation_form.min = 1;
     generation_form.max = max_gen;
@@ -84,31 +102,31 @@ function displayForm(user_name){
     generation_form.required = true;
     MainElement.appendChild(generation_form);
 
-    let university_form = document.createElement('input');
+    const university_form = document.createElement('input');
     university_form.type = "text";
     MainElement.appendChild(university_form);
 
-    let major_form = document.createElement('input');
+    const major_form = document.createElement('input');
     major_form.type = "text";
     MainElement.appendChild(major_form);
 
     createGradeForm();
     
 
-    let hobby_form = document.createElement('textarea');
+    const hobby_form = document.createElement('textarea');
     hobby_form.required = true;
     MainElement.appendChild(hobby_form);
 
-    let add_button = document.createElement('button');
+    const add_button = document.createElement('button');
     add_button.textContent = "質問項目を追加する。";
     add_button.onclick = add_index;
     MainElement.appendChild(add_button);
 
-    let submit_button = document.createElement('button');
+    const submit_button = document.createElement('button');
     submit_button.textContent = "保存";
     MainElement.appendChild(submit_button);
 
-    let cancel_button = document.createElement('button');
+    const cancel_button = document.createElement('button');
     cancel_button.textContent = "もどる";
     MainElement.appendChild(cancel_button);
 }
@@ -137,7 +155,7 @@ function add_index(){
 
 function createGradeForm(){
     let grade_form = document.createElement('select');
-    const grade_list = ["学部1年","学部2年","学部3年","学部4年","学部5年","学部6年","修士1年","修士2年","博士1年","博士2年","博士3年","博士4年"];
+    const grade_list = ["学部1年","学部2年","学部3年","学部4年","学部5年","学部6年","修士1年","修士2年","博士1年","博士2年","博士3年","博士4年","記載しない"];
     for (let list of grade_list){
         const list_elm = document.createElement('option');
         list_elm.value = list;
