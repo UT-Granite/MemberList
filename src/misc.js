@@ -12,7 +12,8 @@ window.addEventListener('message',function(e){
             console.log(`sessionID:${sessionID}`);
             console.log(`userHash:${userHash}`);
 
-            fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?nandi=name&userHash=${userHash}&sessionID=${sessionID}`)
+            try{
+            fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?info=nandi&userHash=${userHash}&sessionID=${sessionID}`)
                 .then((response)=>response.json())
                 .then((data)=>{
                     if (data.ok){
@@ -30,7 +31,13 @@ window.addEventListener('message',function(e){
                         errElem.onclick = displayLogin();
                         HeaderElement.appendChild(errElem);
                     }
-                });
+                });}catch (e){
+                    let errElem = this.document.createElement('button');
+                        errElem.textContent = `エラーによりユーザー情報を取得できませんでした。\nもう一度ログイン`;
+                        console.log(`fetchに失敗しました。:${data.error}`);
+                        errElem.onclick = displayLogin();
+                        HeaderElement.appendChild(errElem);
+                }
 
             break;
     }
