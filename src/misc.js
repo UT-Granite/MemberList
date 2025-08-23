@@ -64,6 +64,8 @@ function displayLogin(){
 }
 
 function displayForm(user_name,icon_url){
+    const member_info = {};
+
     clearMain();
     const icon_canvas = document.createElement('canvas');
     let squere_length = Math.min(200,window.innerWidth);
@@ -193,8 +195,15 @@ function displayForm(user_name,icon_url){
     major_form.type = "text";
     MainElement.appendChild(major_form);
 
-    createGradeForm();
-    
+    const grade_form = document.createElement('select');
+    const grade_list = ["学部1年","学部2年","学部3年","学部4年","学部5年","学部6年","修士1年","修士2年","博士1年","博士2年","博士3年","博士4年","記載しない"];
+    for (let list of grade_list){
+        const list_elm = document.createElement('option');
+        list_elm.value = list;
+        list_elm.textContent = list;
+        grade_form.appendChild(list_elm); 
+    }
+    MainElement.appendChild(grade_form);
 
     const hobby_form = document.createElement('textarea');
     hobby_form.required = true;
@@ -207,6 +216,24 @@ function displayForm(user_name,icon_url){
 
     const submit_button = document.createElement('button');
     submit_button.textContent = "保存";
+    submit_button.onclick = () => {
+        member_info.name = real_name_form.value;
+        member_info.furigana = furigana_name_form.value;
+        member_info.nick_name = nick_name_form.value;
+        member_info.roll_in_year = parseInt(generation_form.value) + 2017;
+        member_info.university = university_form.value;
+        member_info.major = major_form.value;
+        member_info.grade = grade_form.value;
+        member_info.hobby = hobby_form.value;
+
+        const addedForms = document.getElementsByClassName("addedForm");
+        for (const addedForm of addedForms){
+            member_info[addedForm.children[0].value] = addedForm.children[1].value;
+        }
+
+        const json_data = JSON.stringify(member_info);
+        console.log(json_data);
+    }
     MainElement.appendChild(submit_button);
 
     const cancel_button = document.createElement('button');
@@ -223,6 +250,7 @@ function clearMain(){
 
 function add_index(){
     let form_added_div = document.createElement('div');
+    form_added_div.className = "addedForm"
     let index_name_form = document.createElement('input');
     index_name_form.type = "text";
     form_added_div.appendChild(index_name_form);
@@ -236,17 +264,7 @@ function add_index(){
     MainElement.appendChild(form_added_div);
 }
 
-function createGradeForm(){
-    let grade_form = document.createElement('select');
-    const grade_list = ["学部1年","学部2年","学部3年","学部4年","学部5年","学部6年","修士1年","修士2年","博士1年","博士2年","博士3年","博士4年","記載しない"];
-    for (let list of grade_list){
-        const list_elm = document.createElement('option');
-        list_elm.value = list;
-        list_elm.textContent = list;
-        grade_form.appendChild(list_elm); 
-    }
-    MainElement.appendChild(grade_form);
-}
+
 
 function climp(x,min,max){
     if(x < min){
