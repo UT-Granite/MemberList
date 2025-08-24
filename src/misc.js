@@ -3,6 +3,7 @@ const HeaderElement = document.getElementsByTagName('header')[0];
 const MainElement = document.getElementsByTagName('main')[0];
 let sessionID;
 let userHash;
+let AES_Key;
 
 window.addEventListener('message',function(e){
     switch (e.data.action){
@@ -19,6 +20,7 @@ window.addEventListener('message',function(e){
                     if (data.ok){
                         const user_name = data.name;
                         const icon_url = data.icon;
+                        AES_Key = data.key;
                         console.log(icon_url);
                         let user_nameElem = document.createElement('button');
                         user_nameElem.textContent = `${user_name}さんのプロフィールを記入する。`;
@@ -232,7 +234,12 @@ function displayForm(user_name,icon_url){
         }
 
         const json_data = JSON.stringify(member_info);
-        console.log(json_data);
+        const encrypted_data = CryptoJS.AES.encrypt(json_data,"testkey").toString();
+        
+        console.log(encrypted_data);
+
+        const decrypted_data = CryptoJS.AES.decrypt(encrypted_data,"testkey").toString(CryptoJS.enc.Utf8);
+        console.log(decrypted_data);
     }
     MainElement.appendChild(submit_button);
 
