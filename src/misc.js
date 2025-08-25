@@ -219,6 +219,9 @@ function displayForm(user_name,icon_url){
     const submit_button = document.createElement('button');
     submit_button.textContent = "保存";
     submit_button.onclick = () => {
+
+        const upload_response = uploadGyazo(icon_canvas.toBlob(),"xNf5XQc-la13-Vp5mZThr2dwyT6AT6G4FEeMbRwPmQ0");
+
         member_info.name = real_name_form.value;
         member_info.furigana = furigana_name_form.value;
         member_info.nick_name = nick_name_form.value;
