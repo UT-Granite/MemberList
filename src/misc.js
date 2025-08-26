@@ -12,7 +12,7 @@ window.addEventListener('message',function(e){
             sessionID = e.data.message;
             userHash = e.data.userHash;
             hashList = e.data.hashList.split(',');
-            AES_Key = e.data.aes_key;
+            AES_Key = e.data.aeskey;
             console.log(`sessionID:${sessionID}`);
             console.log(`userHash:${userHash}`);
             console.log(`hashList:${hashList}`);
