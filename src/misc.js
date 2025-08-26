@@ -3,6 +3,7 @@ const HeaderElement = document.getElementsByTagName('header')[0];
 const MainElement = document.getElementsByTagName('main')[0];
 let sessionID;
 let userHash = "000000";
+let hashList = [];
 let AES_Key;
 
 window.addEventListener('message',function(e){
@@ -10,8 +11,10 @@ window.addEventListener('message',function(e){
         case 'sessionID':
             sessionID = e.data.message;
             userHash = e.data.userHash;
+            hashList = e.data.hashList.split(',');
             console.log(`sessionID:${sessionID}`);
             console.log(`userHash:${userHash}`);
+            console.log(`hashList:${hashList}`);
 
             try{
             fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?info=nandi&userHash=${userHash}&sessionID=${sessionID}`)
@@ -52,8 +55,8 @@ try{
     },'*');
     
 }catch (e){
-    //displayLogin();
-    displayForm("あああ",null);
+    displayLogin();
+    //displayForm("あああ",null);
 }
 
 
