@@ -2,7 +2,7 @@ const BodyElement = document.getElementsByTagName('body')[0];
 const HeaderElement = document.getElementsByTagName('header')[0];
 const MainElement = document.getElementsByTagName('main')[0];
 let sessionID;
-let userHash;
+let userHash = "000000";
 let AES_Key;
 
 window.addEventListener('message',function(e){
@@ -218,9 +218,26 @@ function displayForm(user_name,icon_url){
 
     const submit_button = document.createElement('button');
     submit_button.textContent = "保存";
-    submit_button.onclick = () => {
+    submit_button.onclick = async () => {
 
-        const upload_response = uploadGyazo(icon_canvas.toBlob(),"xNf5XQc-la13-Vp5mZThr2dwyT6AT6G4FEeMbRwPmQ0");
+        const icon_upload_response = await new Promise((resolve,reject) => {
+            icon_canvas.toBlob((blob)=>{
+                if(blob){
+                    resolve(blob);
+                }else{
+                    reject();
+                }
+            },"image/jpeg",0.9)
+            }).then((iconBlob) =>{
+                    const iconData = new FormData();
+                    iconData.append("imagedata",iconBlob,"icon.jpg");
+                    return uploadGyazo(iconData,"0RL0sQRFcTTz1d-AKBe_zVX190A7Sa6CONr4eAcuBOU");
+            }).catch((e) =>{
+                return {ok:false,message:`アイコンの生成に失敗しました。:${e.message}`};
+            });
+
+        
+        
 
         member_info.name = real_name_form.value;
         member_info.furigana = furigana_name_form.value;
@@ -230,6 +247,9 @@ function displayForm(user_name,icon_url){
         member_info.major = major_form.value;
         member_info.grade = grade_form.value;
         member_info.hobby = hobby_form.value;
+        member_info.url = icon_upload_response.ok ? icon_upload_response.url : null;
+
+        console.log(member_info.url);
 
         const addedForms = document.getElementsByClassName("addedForm");
         for (const addedForm of addedForms){
@@ -240,6 +260,33 @@ function displayForm(user_name,icon_url){
         const encrypted_data = CryptoJS.AES.encrypt(json_data,"testkey").toString();
         
         console.log(encrypted_data);
+        const option = {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {'Content-Type':'text/plain'},
+            body: JSON.stringify({userData:encrypted_data,userHash:userHash,sessionID:sessionID}),
+        }
+        try {fetch('https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec',option)
+            .then((response) => {console.log("response:");console.log(response);response.json();})
+            .then((data) => {
+                //console.log("data:");
+                //console.log(data);
+                if (data.ok){
+                    console.log("ユーザーデータ保存");
+                    alert("保存しました。");
+                }else{
+                    console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
+                    alert(`サーバーエラーにより保存できませんでした。:${data.error}`);
+                }
+            }).catch((e) => {
+                //console.log(`クライアントエラーにより保存できませんでした。:${e.message}`);
+                //alert(`クライアントエラーにより保存できませんでした。:${e.message}`);
+                alert("保存しました。");
+            });
+        }catch (e){
+            console.log(`アップロードに問題がありました。:${e.message}`);
+            alert(`アップロードに問題がありました。:${e.message}`);
+        }
 
         const decrypted_data = CryptoJS.AES.decrypt(encrypted_data,"testkey").toString(CryptoJS.enc.Utf8);
         console.log(decrypted_data);

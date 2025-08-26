@@ -2,6 +2,7 @@ async function uploadGyazo(imgData,accessToken){
     const url = "https://upload.gyazo.com/api/upload";
     const payload = {
         method: "POST",
+        mode: "no-cors",
         headers: {'Authorization':`Bearer ${accessToken}`},
         body: imgData
     };
