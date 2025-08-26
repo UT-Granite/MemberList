@@ -5,6 +5,7 @@ let sessionID;
 let userHash = "000000";
 let hashList = [];
 let AES_Key;
+let my_info = {};
 
 window.addEventListener('message',function(e){
     switch (e.data.action){
@@ -16,6 +17,25 @@ window.addEventListener('message',function(e){
             console.log(`sessionID:${sessionID}`);
             console.log(`userHash:${userHash}`);
             console.log(`hashList:${hashList}`);
+
+            
+            try{
+                fetch(`./data/xmCIIWinjfj4nQCp18tFNHDf14EhUZaEdg1qEUnGGUw=`).then((response) => {
+                    return(response.text());
+                }).then((data) => {
+                    const decrypted_data = JSON.parse(CryptoJS.AES.decrypt(data,AES_Key).toString(CryptoJS.enc.Utf8));
+                    console.log(decrypted_data);
+                    my_info = decrypted_data;
+                    const user_name = decrypted_data.name;
+                    let user_nameElem = document.createElement('button');
+                    user_nameElem.textContent = `${user_name}さんのプロフィールを記入する。`;
+                    user_nameElem.onclick = () => {displayForm(user_name,null);}; 
+                    HeaderElement.appendChild(user_nameElem);
+                });
+            }catch(e){
+            console.log("ファイルが見つかりませんでした。");
+
+            
 
             try{
             fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?info=name&userHash=${userHash}&sessionID=${sessionID}`)
@@ -43,6 +63,7 @@ window.addEventListener('message',function(e){
                         errElem.onclick = displayLogin();
                         HeaderElement.appendChild(errElem);
                 }
+            }
 
             break;
     }
@@ -176,12 +197,12 @@ function displayForm(user_name,icon_url){
 
     const furigana_name_form = document.createElement('input');
     furigana_name_form.type = "text";
-    furigana_name_form.value = "";
+    furigana_name_form.value = my_info.furigana || "";
     MainElement.appendChild(furigana_name_form);
 
     const nick_name_form = document.createElement('input');
     nick_name_form.type = "text";
-    nick_name_form.value = "";
+    nick_name_form.value = my_info.nick_name || "";
     MainElement.appendChild(nick_name_form);
     
     const generation_form = document.createElement('input');
@@ -191,16 +212,18 @@ function displayForm(user_name,icon_url){
     generation_form.min = 1;
     generation_form.max = max_gen;
     generation_form.step = "1";
-    generation_form.value = max_gen;
+    generation_form.value = my_info.roll_in_year ? (my_info.roll_in_year - 2017) : max_gen;
     generation_form.required = true;
     MainElement.appendChild(generation_form);
 
     const university_form = document.createElement('input');
     university_form.type = "text";
+    university_form.value = my_info.university || "";
     MainElement.appendChild(university_form);
 
     const major_form = document.createElement('input');
     major_form.type = "text";
+    major_form.value = my_info.major || "";
     MainElement.appendChild(major_form);
 
     const grade_form = document.createElement('select');
@@ -211,10 +234,12 @@ function displayForm(user_name,icon_url){
         list_elm.textContent = list;
         grade_form.appendChild(list_elm); 
     }
+    grade_form.value = my_info.grade || "記載しない";
     MainElement.appendChild(grade_form);
 
     const hobby_form = document.createElement('textarea');
     hobby_form.required = true;
+    hobby_form.value = my_info.hobby || "";
     MainElement.appendChild(hobby_form);
 
     const add_button = document.createElement('button');
