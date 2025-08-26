@@ -87,23 +87,29 @@ function displayForm(user_name,icon_url){
     }else{
         icon_image.src = icon_url;
     }
+    const imgElem = document.createElement('img');
+    imgElem.src = icon_image.src;
+    imgElem.style.display = "none";
+    imgElem.crossOrigin = "anonymous";
+    MainElement.appendChild(imgElem);
+
     const context = icon_canvas.getContext("2d");
-    icon_image.onload = () => {
+    imgElem.onload = () => {
         offsetX = 0;
         offsetY = 0;
         drawImage()
     }
 
     function drawImage(){
-        const min_edge = Math.min(icon_image.width,icon_image.height);
-        const img_width = icon_canvas.width*icon_image.width/min_edge;
-        const img_height = icon_canvas.height*icon_image.height/min_edge;
+        const min_edge = Math.min(imgElem.naturalWidth,imgElem.naturalHeight);
+        const img_width = icon_canvas.width*imgElem.naturalWidth/min_edge;
+        const img_height = icon_canvas.height*imgElem.naturalHeight/min_edge;
         let x = (icon_canvas.width - scale*img_width)/2 + offsetX;
         let y = (icon_canvas.height - scale*img_height)/2 + offsetY;
         x = climp(x,-img_width,img_width);
         y = climp(y,-img_height,img_height);
         context.clearRect(0,0,icon_canvas.width,icon_canvas.height);
-        context.drawImage(icon_image,x,y,scale*img_width,scale*img_height);
+        context.drawImage(imgElem,x,y,scale*img_width,scale*img_height);
     }
 
     const file_select_button = document.createElement('label');
