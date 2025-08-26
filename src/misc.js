@@ -12,22 +12,22 @@ window.addEventListener('message',function(e){
             sessionID = e.data.message;
             userHash = e.data.userHash;
             hashList = e.data.hashList.split(',');
+            AES_Key = e.data.aes_key;
             console.log(`sessionID:${sessionID}`);
             console.log(`userHash:${userHash}`);
             console.log(`hashList:${hashList}`);
 
             try{
-            fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?info=nandi&userHash=${userHash}&sessionID=${sessionID}`)
+            fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?info=name&userHash=${userHash}&sessionID=${sessionID}`)
                 .then((response)=>response.json())
                 .then((data)=>{
                     if (data.ok){
                         const user_name = data.name;
-                        const icon_url = data.icon;
-                        AES_Key = data.key;
-                        console.log(icon_url);
+                        //const icon_url = data.icon;
+                        //console.log(icon_url);
                         let user_nameElem = document.createElement('button');
                         user_nameElem.textContent = `${user_name}さんのプロフィールを記入する。`;
-                        user_nameElem.onclick = () => {displayForm(user_name,icon_url);}; 
+                        user_nameElem.onclick = () => {displayForm(user_name,null);}; 
                         HeaderElement.appendChild(user_nameElem);
                     }else{
                         let errElem = this.document.createElement('button');
@@ -82,10 +82,7 @@ function displayForm(user_name,icon_url){
     icon_canvas.width = squere_length;
     icon_canvas.height = squere_length;
 
-    const imgElem = document.createElement('img');
-    imgElem.style.display = "none";
-    imgElem.crossOrigin = "anonymous";
-    MainElement.appendChild(imgElem);
+    const imgElem = document.getElementById("icon_ref");
     if (icon_url == null){
         imgElem.src = "src/img/noimage.jpg";
     }else{
@@ -292,7 +289,7 @@ function displayForm(user_name,icon_url){
         }
 
         const json_data = JSON.stringify(member_info);
-        const encrypted_data = CryptoJS.AES.encrypt(json_data,"testkey").toString();
+        const encrypted_data = CryptoJS.AES.encrypt(json_data,AES_Key).toString();
         
         console.log(encrypted_data);
         const option = {
@@ -325,8 +322,8 @@ function displayForm(user_name,icon_url){
             alert(`アップロードに問題がありました。:${e.message}`);
         }
 
-        const decrypted_data = CryptoJS.AES.decrypt(encrypted_data,"testkey").toString(CryptoJS.enc.Utf8);
-        console.log(decrypted_data);
+        /*const decrypted_data = CryptoJS.AES.decrypt(encrypted_data,"testkey").toString(CryptoJS.enc.Utf8);
+        console.log(decrypted_data);*/
     }
     MainElement.appendChild(submit_button);
 
