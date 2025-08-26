@@ -219,8 +219,8 @@ function displayForm(user_name,icon_url){
     const submit_button = document.createElement('button');
     submit_button.textContent = "保存";
     submit_button.onclick = async () => {
-
-        const icon_upload_response = await new Promise((resolve,reject) => {
+        
+        /*const icon_upload_response = await new Promise((resolve,reject) => {
             icon_canvas.toBlob((blob)=>{
                 if(blob){
                     resolve(blob);
@@ -231,13 +231,41 @@ function displayForm(user_name,icon_url){
             }).then((iconBlob) =>{
                     const iconData = new FormData();
                     iconData.append("imagedata",iconBlob,"icon.jpg");
-                    return uploadGyazo(iconData,"0RL0sQRFcTTz1d-AKBe_zVX190A7Sa6CONr4eAcuBOU");
+                    return uploadGyazo(iconData,"-RGqPOwpO_YZyHkORi1N1MD87PvY9u9t2jDwOTCf_SI");
             }).catch((e) =>{
                 return {ok:false,message:`アイコンの生成に失敗しました。:${e.message}`};
-            });
+            });**/
+
+        
+        const imageData = icon_canvas.toDataURL('image/jpeg',0.9);
+
+            // FormDataオブジェクトを作成
+        const formData = new FormData();
+        formData.append('imageData', imageData);
 
         
         
+        try {await fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?userHash=${userHash}&sessionID=${sessionID}&postData=icon`
+            ,{
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type':'application/x-www-form-urlencoded',
+                },
+                body: formData,
+            }).then((response) => {return response.json();})
+            .then((data) => {
+                if (data.ok){
+                    member_info.icon_url = data.url;
+                }
+                else{
+                    console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
+                    alert(`サーバーエラーにより保存できませんでした。:${data.error}`);
+                }
+            })}catch (e){
+                console.log(`アップロードに問題がありました。:${e.message}`);
+                alert(`アップロードに問題がありました。:${e.message}`);
+            }
 
         member_info.name = real_name_form.value;
         member_info.furigana = furigana_name_form.value;
@@ -247,9 +275,7 @@ function displayForm(user_name,icon_url){
         member_info.major = major_form.value;
         member_info.grade = grade_form.value;
         member_info.hobby = hobby_form.value;
-        member_info.url = icon_upload_response.ok ? icon_upload_response.url : null;
-
-        console.log(member_info.url);
+        
 
         const addedForms = document.getElementsByClassName("addedForm");
         for (const addedForm of addedForms){
@@ -262,15 +288,17 @@ function displayForm(user_name,icon_url){
         console.log(encrypted_data);
         const option = {
             method: 'POST',
-            mode: 'no-cors',
-            headers: {'Content-Type':'text/plain'},
-            body: JSON.stringify({userData:encrypted_data,userHash:userHash,sessionID:sessionID}),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type':'application/x-www-form-urlencoded',
+            },
+            body: encrypted_data,
         }
-        try {fetch('https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec',option)
-            .then((response) => {console.log("response:");console.log(response);response.json();})
+        try {fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?userHash=${userHash}&sessionID=${sessionID}&postData=userData`,option)
+            .then((response) => {return response.json();})
             .then((data) => {
-                //console.log("data:");
-                //console.log(data);
+                console.log("data:");
+                console.log(data);
                 if (data.ok){
                     console.log("ユーザーデータ保存");
                     alert("保存しました。");
@@ -279,9 +307,9 @@ function displayForm(user_name,icon_url){
                     alert(`サーバーエラーにより保存できませんでした。:${data.error}`);
                 }
             }).catch((e) => {
-                //console.log(`クライアントエラーにより保存できませんでした。:${e.message}`);
-                //alert(`クライアントエラーにより保存できませんでした。:${e.message}`);
-                alert("保存しました。");
+                console.log(`クライアントエラーにより保存できませんでした。:${e.message}`);
+                alert(`クライアントエラーにより保存できませんでした。:${e.message}`);
+                //alert("保存しました。");
             });
         }catch (e){
             console.log(`アップロードに問題がありました。:${e.message}`);
