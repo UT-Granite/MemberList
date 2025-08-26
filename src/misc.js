@@ -247,6 +247,24 @@ function displayForm(user_name,icon_url){
     add_button.onclick = add_index;
     MainElement.appendChild(add_button);
 
+    for (const qanda of Object.entries(my_info.add_questions || {})){
+        let form_added_div = document.createElement('div');
+        form_added_div.className = "addedForm"
+        let index_name_form = document.createElement('input');
+        index_name_form.type = "text";
+        index_name_form.value = qanda[0];
+        form_added_div.appendChild(index_name_form);
+        let index_content_form = document.createElement('input');
+        index_content_form.type = "text";
+        index_content_form.value = qanda[1];
+        form_added_div.appendChild(index_content_form);
+        let delete_button = document.createElement('button');
+        delete_button.textContent = "削除";
+        delete_button.onclick = () => {form_added_div.remove();};
+        form_added_div.appendChild(delete_button);
+        MainElement.appendChild(form_added_div);
+    }
+
     const submit_button = document.createElement('button');
     submit_button.textContent = "保存";
     submit_button.onclick = async () => {
@@ -307,12 +325,12 @@ function displayForm(user_name,icon_url){
         member_info.grade = grade_form.value;
         member_info.hobby = hobby_form.value;
         
-
+        const add_questions = {};
         const addedForms = document.getElementsByClassName("addedForm");
         for (const addedForm of addedForms){
-            member_info[addedForm.children[0].value] = addedForm.children[1].value;
+            add_questions[addedForm.children[0].value] = addedForm.children[1].value;
         }
-
+        member_info.add_questions = add_questions;
         const json_data = JSON.stringify(member_info);
         const encrypted_data = CryptoJS.AES.encrypt(json_data,AES_Key).toString();
         
