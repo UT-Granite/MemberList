@@ -81,17 +81,17 @@ function displayForm(user_name,icon_url){
     let scale = 1;
     icon_canvas.width = squere_length;
     icon_canvas.height = squere_length;
-    const icon_image = new Image();
-    if (icon_url == null){
-        icon_image.src = "src/img/noimage.jpg";
-    }else{
-        icon_image.src = icon_url;
-    }
+
     const imgElem = document.createElement('img');
-    imgElem.src = icon_image.src;
     imgElem.style.display = "none";
     imgElem.crossOrigin = "anonymous";
     MainElement.appendChild(imgElem);
+    if (icon_url == null){
+        imgElem.src = "src/img/noimage.jpg";
+    }else{
+        imgElem.src = icon_url;
+    }
+    
 
     const context = icon_canvas.getContext("2d");
     imgElem.onload = () => {
@@ -123,7 +123,7 @@ function displayForm(user_name,icon_url){
         const reader = new FileReader();
         reader.readAsDataURL(image_file[0]);
         reader.onload = () => {
-            icon_image.src = reader.result;
+            imgElem.src = reader.result;
         }
     });
     file_select_button.appendChild(file_selector);
