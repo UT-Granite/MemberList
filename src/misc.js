@@ -18,7 +18,7 @@ window.addEventListener('message',function(e){
             console.log(`userHash:${userHash}`);
             console.log(`hashList:${hashList}`);
 
-            
+            displayList();
             try{
                 fetch(`./data/xmCIIWinjfj4nQCp18tFNHDf14EhUZaEdg1qEUnGGUw=`).then((response) => {
                     return(response.text());
@@ -372,6 +372,7 @@ function displayForm(user_name,icon_url){
 
     const cancel_button = document.createElement('button');
     cancel_button.textContent = "もどる";
+    cancel_button.onclick = displayList;
     MainElement.appendChild(cancel_button);
 }
 
