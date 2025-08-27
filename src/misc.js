@@ -29,7 +29,7 @@ window.addEventListener('message',function(e){
                     const user_name = decrypted_data.name;
                     let user_nameElem = document.createElement('button');
                     user_nameElem.textContent = `${user_name}さんのプロフィールを記入する。`;
-                    user_nameElem.onclick = () => {displayForm(user_name,null);}; 
+                    user_nameElem.onclick = () => {displayForm(user_name,my_info.src);}; 
                     HeaderElement.appendChild(user_nameElem);
                 });
             }catch(e){
@@ -38,16 +38,16 @@ window.addEventListener('message',function(e){
             
 
             try{
-            fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?info=name&userHash=${userHash}&sessionID=${sessionID}`)
+            fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?info=nandi&userHash=${userHash}&sessionID=${sessionID}`)
                 .then((response)=>response.json())
                 .then((data)=>{
                     if (data.ok){
                         const user_name = data.name;
-                        //const icon_url = data.icon;
+                        const icon_url = data.icon;
                         //console.log(icon_url);
                         let user_nameElem = document.createElement('button');
                         user_nameElem.textContent = `${user_name}さんのプロフィールを記入する。`;
-                        user_nameElem.onclick = () => {displayForm(user_name,null);}; 
+                        user_nameElem.onclick = () => {displayForm(user_name,icon_url);}; 
                         HeaderElement.appendChild(user_nameElem);
                     }else{
                         let errElem = this.document.createElement('button');
@@ -89,7 +89,7 @@ function displayLogin(){
     MainElement.appendChild(LoginButton);
 }
 
-function displayForm(user_name,icon_url){
+function displayForm(user_name,icon_src_url){
     const member_info = {};
 
     clearMain();
@@ -102,6 +102,12 @@ function displayForm(user_name,icon_url){
     let scale = 1;
     icon_canvas.width = squere_length;
     icon_canvas.height = squere_length;
+
+    const icon_url = async () =>{
+        const src_res = await fetch(icon_src_url);
+        const cleanBlob = await src_res.blob();
+        return URL.createObjectURL(cleanBlob);
+    }
 
     const imgElem = document.getElementById("icon_ref");
     if (icon_url == null){
