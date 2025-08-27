@@ -107,21 +107,7 @@ async function displayForm(user_name,icon_src_url){
 
     const imgElem = document.getElementById("icon_ref");
     imgElem.src = "src/img/noimage.jpg";
-   
-    
-    console.log("begin");
-    const src_res = await fetch(icon_src_url);
-    console.log("src_res");
-    console.log(src_res);
-    const cleanBlob = await src_res.blob();
-    console.log("cleanBlob");
-    console.log(cleanBlob);
-    const icon_url =  URL.createObjectURL(cleanBlob);
-    imgElem.src = icon_url;
-    console.log("result=url");
-    console.log(icon_url);
-    
-
+  
     const context = icon_canvas.getContext("2d");
     imgElem.onload = () => {
         offsetX = 0;
