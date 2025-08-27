@@ -103,17 +103,17 @@ function displayForm(user_name,icon_src_url){
     icon_canvas.width = squere_length;
     icon_canvas.height = squere_length;
 
+    
+
+    const imgElem = document.getElementById("icon_ref");
+    imgElem.src = "src/img/noimage.jpg";
+   
     async () =>{
         const src_res = await fetch(icon_src_url);
         const cleanBlob = await src_res.blob();
         const icon_url =  URL.createObjectURL(cleanBlob);
         imgElem.src = icon_url;
     }
-
-    const imgElem = document.getElementById("icon_ref");
-    imgElem.src = "src/img/noimage.jpg";
-   
-    
 
     const context = icon_canvas.getContext("2d");
     imgElem.onload = () => {
