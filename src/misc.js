@@ -29,7 +29,7 @@ window.addEventListener('message',function(e){
                     const user_name = decrypted_data.name;
                     let user_nameElem = document.createElement('button');
                     user_nameElem.textContent = `${user_name}さんのプロフィールを記入する。`;
-                    user_nameElem.onclick = () => {displayForm(user_name,my_info.src);}; 
+                    user_nameElem.onclick = () => {displayForm(user_name,my_info.icon_url);}; 
                     HeaderElement.appendChild(user_nameElem);
                 });
             }catch(e){
