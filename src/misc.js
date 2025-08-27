@@ -377,9 +377,8 @@ function displayForm(user_name,icon_url){
 }
 
 function clearMain(){
-    const mainContents = MainElement.children;
-    for (const elem of mainContents){
-        elem.remove();
+    while(mainContents.firstChild){
+        mainContents.removeChild(mainContents.firstChild);
     }
 }
 
