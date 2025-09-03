@@ -13,19 +13,21 @@ iframe {
 
 body{
     position: relative;
+    height:100dvh;
+    width:100dvw;
+    margin: 0;
     overflow: hidden;
     z-index: 0;
 }
 body:before{
     content: '';
     margin:  0;
-    width: 100vw;
-    height: 100dvh;
     top:-15px;
     left:-15px;
     right:-15px;
     bottom:-15px;
     position:absolute;
+    
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: max(200vh,200vw);
@@ -48,4 +50,5 @@ main{
 
 html{
     height:100dvh;
+    background-color: black;
 }
