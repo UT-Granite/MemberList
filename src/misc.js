@@ -1,3 +1,5 @@
+const testMode = true;
+
 const BodyElement = document.getElementsByTagName('body')[0];
 const HeaderElement = document.getElementsByTagName('header')[0];
 const MainElement = document.getElementsByTagName('main')[0];
@@ -20,54 +22,59 @@ window.addEventListener('message',function(e){
 
             displayList();
             try{
-                fetch(`./data/xmCIIWinjfj4nQCp18tFNHDf14EhUZaEdg1qEUnGGUw=`).then((response) => {
-                    return(response.text());
-                }).then((data) => {
-                    const decrypted_data = JSON.parse(CryptoJS.AES.decrypt(data,AES_Key).toString(CryptoJS.enc.Utf8));
-                    console.log(decrypted_data);
-                    my_info = decrypted_data;
-                    const user_name = decrypted_data.name;
-                    let user_nameElem = document.createElement('button');
-                    user_nameElem.textContent = `${user_name}さんのプロフィールを記入する。`;
-                    user_nameElem.onclick = () => {displayForm(user_name,my_info.icon_url);}; 
-                    HeaderElement.appendChild(user_nameElem);
-                });
+                getExistingUserInfo();
             }catch(e){
             console.log("ファイルが見つかりませんでした。");
 
-            
-
-            try{
-            fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?info=nandi&userHash=${userHash}&sessionID=${sessionID}`)
+                try{
+                fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?info=nandi&userHash=${userHash}&sessionID=${sessionID}`)
                 .then((response)=>response.json())
                 .then((data)=>{
-                    if (data.ok){
-                        const user_name = data.name;
-                        const icon_url = data.icon;
-                        //console.log(icon_url);
-                        let user_nameElem = document.createElement('button');
-                        user_nameElem.textContent = `${user_name}さんのプロフィールを記入する。`;
-                        user_nameElem.onclick = () => {displayForm(user_name,icon_url);}; 
-                        HeaderElement.appendChild(user_nameElem);
-                    }else{
-                        let errElem = this.document.createElement('button');
-                        errElem.textContent = `エラーによりユーザー情報を取得できませんでした。\nもう一度ログイン`;
-                        console.log(`ユーザーネーム取得でエラー:${data.error}`);
-                        errElem.onclick = displayLogin();
-                        HeaderElement.appendChild(errElem);
-                    }
+                    getNewUserInfo(data);
                 });}catch (e){
                     let errElem = this.document.createElement('button');
-                        errElem.textContent = `エラーによりユーザー情報を取得できませんでした。\nもう一度ログイン`;
-                        console.log(`fetchに失敗しました。:${data.error}`);
-                        errElem.onclick = displayLogin();
-                        HeaderElement.appendChild(errElem);
+                    errElem.textContent = `エラーによりユーザー情報を取得できませんでした。\nもう一度ログイン`;
+                    console.log(`fetchに失敗しました。:${data.error}`);
+                    errElem.onclick = displayLogin();
+                    HeaderElement.appendChild(errElem);
                 }
             }
 
             break;
     }
 })
+
+async function getNewUserInfo(data){
+    if (data.ok){
+        const user_name = data.name;
+        const icon_url = data.icon;
+        let user_nameElem = document.createElement('button');
+        user_nameElem.textContent = `${user_name}さんのプロフィールを記入する。`;
+        user_nameElem.onclick = () => {displayForm(user_name,icon_url);}; 
+        HeaderElement.appendChild(user_nameElem);
+    }else{
+        let errElem = this.document.createElement('button');
+        errElem.textContent = `エラーによりユーザー情報を取得できませんでした。\nもう一度ログイン`;
+        console.log(`ユーザーネーム取得でエラー:${data.error}`);
+        errElem.onclick = displayLogin();
+        HeaderElement.appendChild(errElem);
+    }
+}
+
+async function getExistingUserInfo(){
+    await fetch(`./data/${userHash}`).then((response) => {
+        return(response.text());
+    }).then((data) => {
+        const decrypted_data = JSON.parse(CryptoJS.AES.decrypt(data,AES_Key).toString(CryptoJS.enc.Utf8));
+        console.log(decrypted_data);
+        my_info = decrypted_data;
+        const user_name = decrypted_data.name;
+        let user_nameElem = document.createElement('button');
+        user_nameElem.textContent = `${user_name}さんのプロフィールを記入する。`;
+        user_nameElem.onclick = () => {displayForm(user_name,my_info.icon_url);}; 
+        HeaderElement.appendChild(user_nameElem);
+    });
+}
 
 try{
     window.opener.postMessage({
@@ -99,15 +106,37 @@ function displayLogin(){
     LoginButton.scrolling = "no";
     LoginButton.src = trueIframeSrc;
     contentElm.appendChild(LoginButton);
+
     clearMain();
+
+    if (testMode){
+        const testButtons = document.createElement('div');
+        const testLoginButton = document.createElement('button');
+        const inputTestname = document.createElement('input');
+        testLoginButton.textContent = "テストモードでログイン";
+        testLoginButton.style.zIndex = 10;
+        testLoginButton.onclick = () => {userHash = "test/"+(inputTestname.value || "000000");testDisplayList();};
+        
+        inputTestname.type = "text";
+        inputTestname.placeholder = "テストユーザーネーム";
+        inputTestname.style.zIndex = 10;
+        
+        testButtons.appendChild(inputTestname);
+        testButtons.appendChild(testLoginButton);
+        testButtons.style.position = "absolute";
+        MainElement.appendChild(testButtons);
+    }
+
+    
     MainElement.appendChild(loginGridElm);
 
 }
 
-async function displayForm(user_name,icon_src_url){
-    const member_info = {};
 
+
+function displayImageEditor(user_name,icon_url){
     clearMain();
+    let icon_src = icon_url;
     const icon_canvas = document.createElement('canvas');
     let squere_length = Math.min(200,window.innerWidth);
     let offsetX = 0;
@@ -130,17 +159,7 @@ async function displayForm(user_name,icon_src_url){
         drawImage()
     }
 
-    function drawImage(){
-        const min_edge = Math.min(imgElem.naturalWidth,imgElem.naturalHeight);
-        const img_width = icon_canvas.width*imgElem.naturalWidth/min_edge;
-        const img_height = icon_canvas.height*imgElem.naturalHeight/min_edge;
-        let x = (icon_canvas.width - scale*img_width)/2 + offsetX;
-        let y = (icon_canvas.height - scale*img_height)/2 + offsetY;
-        x = climp(x,-img_width,img_width);
-        y = climp(y,-img_height,img_height);
-        context.clearRect(0,0,icon_canvas.width,icon_canvas.height);
-        context.drawImage(imgElem,x,y,scale*img_width,scale*img_height);
-    }
+    
 
     const file_select_button = document.createElement('label');
     file_select_button.textContent = "画像の変更";
@@ -200,6 +219,85 @@ async function displayForm(user_name,icon_src_url){
 
     MainElement.appendChild(icon_canvas);
     MainElement.appendChild(file_select_button);
+
+    const confirm_button = document.createElement('button');
+    confirm_button.textContent = "決定";
+    confirm_button.onclick = async () => {
+        const imageData = icon_canvas.toDataURL('image/jpeg',0.9);
+
+            // FormDataオブジェクトを作成
+        const formData = new FormData();
+        formData.append('imageData', imageData);
+
+        
+        if (testMode){
+            const link = document.createElement('a');
+            link.href = imageData;
+            link.download = `${userHash}_icon.jpeg`;
+            link.click();
+            icon_src = `./data/test/img/${userHash}_icon.jpeg`;
+            alert("保存しました。");
+        }else{
+        try {await fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?userHash=${userHash}&sessionID=${sessionID}&postData=icon`
+            ,{
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type':'application/x-www-form-urlencoded',
+                },
+                body: formData,
+            }).then((response) => {return response.json();})
+            .then((data) => {
+                if (data.ok){
+                    icon_src = data.url;
+                }
+                else{
+                    console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
+                    alert(`サーバーエラーにより保存できませんでした。:${data.error}`);
+                }
+            })
+        }catch (e){
+            console.log(`アップロードに問題がありました。:${e.message}`);
+            alert(`アップロードに問題がありました。:${e.message}`);
+        }
+        }
+        displayForm(user_name,icon_src);
+    }
+
+    MainElement.appendChild(confirm_button);
+
+    const cancel_button = document.createElement('button');
+    cancel_button.textContent = "キャンセル";
+    cancel_button.onclick = () => {displayForm(user_name,icon_url);};
+    MainElement.appendChild(cancel_button);
+
+    function drawImage(){
+        const min_edge = Math.min(imgElem.naturalWidth,imgElem.naturalHeight);
+        const img_width = icon_canvas.width*imgElem.naturalWidth/min_edge;
+        const img_height = icon_canvas.height*imgElem.naturalHeight/min_edge;
+        let x = (icon_canvas.width - scale*img_width)/2 + offsetX;
+        let y = (icon_canvas.height - scale*img_height)/2 + offsetY;
+        x = climp(x,-img_width,img_width);
+        y = climp(y,-img_height,img_height);
+        context.clearRect(0,0,icon_canvas.width,icon_canvas.height);
+        context.drawImage(imgElem,x,y,scale*img_width,scale*img_height);
+    }
+}
+
+async function displayForm(user_name,icon_src_url){
+    const member_info = {};
+
+    clearMain();
+    
+    const iconElm = document.createElement('img');
+    iconElm.src = icon_src_url || "src/img/noimage.jpg";
+    iconElm.width = 100;
+    iconElm.height = 100;
+    MainElement.appendChild(iconElm);
+    const edit_icon_button = document.createElement('button');
+    edit_icon_button.textContent = "アイコンを編集する";
+    edit_icon_button.onclick = () => {displayImageEditor(user_name,icon_src_url);};
+    MainElement.appendChild(edit_icon_button);
 
     const real_name_form = document.createElement('input');
     real_name_form.type = "text";
@@ -298,35 +396,7 @@ async function displayForm(user_name,icon_src_url){
             });**/
 
         
-        const imageData = icon_canvas.toDataURL('image/jpeg',0.9);
-
-            // FormDataオブジェクトを作成
-        const formData = new FormData();
-        formData.append('imageData', imageData);
-
         
-        
-        try {await fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?userHash=${userHash}&sessionID=${sessionID}&postData=icon`
-            ,{
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type':'application/x-www-form-urlencoded',
-                },
-                body: formData,
-            }).then((response) => {return response.json();})
-            .then((data) => {
-                if (data.ok){
-                    member_info.icon_url = data.url;
-                }
-                else{
-                    console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
-                    alert(`サーバーエラーにより保存できませんでした。:${data.error}`);
-                }
-            })}catch (e){
-                console.log(`アップロードに問題がありました。:${e.message}`);
-                alert(`アップロードに問題がありました。:${e.message}`);
-            }
 
         member_info.name = real_name_form.value;
         member_info.furigana = furigana_name_form.value;
@@ -336,6 +406,7 @@ async function displayForm(user_name,icon_src_url){
         member_info.major = major_form.value;
         member_info.grade = grade_form.value;
         member_info.hobby = hobby_form.value;
+        member_info.icon_url = icon_src_url;
         
         const add_questions = {};
         const addedForms = document.getElementsByClassName("addedForm");
@@ -347,6 +418,14 @@ async function displayForm(user_name,icon_src_url){
         const encrypted_data = CryptoJS.AES.encrypt(json_data,AES_Key).toString();
         
         console.log(encrypted_data);
+        if (testMode){
+            const blob = new Blob([encrypted_data],{type:"text/plain"});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = userHash;
+            a.click();
+            alert("保存しました。");
+        }else{
         const option = {
             method: 'POST',
             headers: {
@@ -376,7 +455,7 @@ async function displayForm(user_name,icon_src_url){
             console.log(`アップロードに問題がありました。:${e.message}`);
             alert(`アップロードに問題がありました。:${e.message}`);
         }
-
+        }
         /*const decrypted_data = CryptoJS.AES.decrypt(encrypted_data,"testkey").toString(CryptoJS.enc.Utf8);
         console.log(decrypted_data);*/
     }
@@ -394,6 +473,25 @@ function clearMain(){
     }
 }
 
+async function testDisplayList(){
+    AES_Key = "testkey";
+    await fetch("./data/test/testHashList").then((response) => {
+        return(response.text());
+    }).then((data) => {
+        const rawHashList = data.split(',');
+        hashList = rawHashList.map((x)=>"test/"+x+".txt");
+    });
+    try{
+        await getExistingUserInfo();
+    }catch(e){
+        console.log("ファイルが見つかりませんでした。");
+        await getNewUserInfo({ok:true,name:userHash,icon:null});
+    }
+    console.log("hashList:");
+    console.log(hashList);
+    displayList();
+}
+
 function displayList(){
     clearMain();
     for (const memberHash of hashList){
@@ -406,6 +504,7 @@ function addMemberPanel(memberHash){
         fetch(`./data/${memberHash}`).then((response) => {
             return(response.text());
         }).then((data) => {
+            console.log(CryptoJS.AES.decrypt(data,AES_Key).toString(CryptoJS.enc.Utf8));
             const member_info = JSON.parse(CryptoJS.AES.decrypt(data,AES_Key).toString(CryptoJS.enc.Utf8));
             const member_panel = document.createElement('div');
             const member_icon = document.createElement('img');
