@@ -1,14 +1,34 @@
+#loginContent{
+    position: relative;
+    height: auto;
+    width: 100dvw;
+}
+
+#loginGrid{
+    height: 100dvh;
+    width: 100dvw;
+    display:grid;
+    align-items: center;
+}
+
 iframe {
     width:max(25%,2.5in);
     height: 50px;
     border-radius: 100vh;
-    border: 3px hsl(162, 100%, 66%) solid;
+    border: 2px hsl(162, 100%, 66%) solid;
     display: block;
-    position :absolute;
     right:0;
     left:0;
     margin: auto;
-    bottom: 30%;
+}
+
+#homeLogo{
+    width:max(30%,3in);
+    right:0;
+    left:0;
+    margin: auto;
+    display: block;
+    margin-bottom: 20%;
 }
 
 body{
@@ -33,7 +53,9 @@ body:before{
     background-size: max(200vh,200vw);
     background-position: 50% 50%;
     background-image: url("./src/img/polygon_background.svg");
-    filter: blur(15px);
+    filter: contrast(1)
+            brightness(0.5)
+            blur(15px);
     z-index: -1;
 }
 

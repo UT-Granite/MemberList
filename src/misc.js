@@ -85,12 +85,23 @@ try{
 function displayLogin(){
     const trueIframeSrc = "https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec";
     const testIframeSrc = "./test/loginButton.html";
+    const loginGridElm = document.createElement('div');
+    loginGridElm.id = "loginGrid";
+    const contentElm = document.createElement('div');
+    contentElm.id = "loginContent";
+    loginGridElm.appendChild(contentElm);
+    const homeLogoElm = document.createElement('img');
+    homeLogoElm.src = "src/img/MemberListLogo.svg";
+    homeLogoElm.id = "homeLogo";
+    contentElm.appendChild(homeLogoElm);
     let LoginButton = document.createElement('iframe');
     LoginButton.allowtransparency = "true";
     LoginButton.scrolling = "no";
     LoginButton.src = trueIframeSrc;
+    contentElm.appendChild(LoginButton);
     clearMain();
-    MainElement.appendChild(LoginButton);
+    MainElement.appendChild(loginGridElm);
+
 }
 
 async function displayForm(user_name,icon_src_url){
