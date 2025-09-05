@@ -1,4 +1,4 @@
-const testMode = false;
+const testMode = true;
 
 const BodyElement = document.getElementsByTagName('body')[0];
 const HeaderElement = document.getElementsByTagName('header')[0];
@@ -250,6 +250,7 @@ function displayImageEditor(user_name,icon_url){
             .then((data) => {
                 if (data.ok){
                     icon_src = data.url;
+                    alert("保存しました。\n全体の編集画面からも保存してください。");
                 }
                 else{
                     console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
@@ -456,6 +457,7 @@ async function displayForm(user_name,icon_src_url){
             alert(`アップロードに問題がありました。:${e.message}`);
         }
         }
+        displayList();
         /*const decrypted_data = CryptoJS.AES.decrypt(encrypted_data,"testkey").toString(CryptoJS.enc.Utf8);
         console.log(decrypted_data);*/
     }
