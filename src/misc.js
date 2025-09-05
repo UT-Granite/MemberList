@@ -1,4 +1,4 @@
-const testMode = true;
+const testMode = false;
 
 const BodyElement = document.getElementsByTagName('body')[0];
 const HeaderElement = document.getElementsByTagName('header')[0];
