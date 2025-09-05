@@ -1,8 +1,8 @@
 iframe {
-    width:max(25%,4in);
-    aspect-ratio: 5;
+    width:max(25%,2.5in);
+    height: 50px;
     border-radius: 100vh;
-    border: 3px aqua solid;
+    border: 3px hsl(162, 100%, 66%) solid;
     display: block;
     position :absolute;
     right:0;

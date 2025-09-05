@@ -83,8 +83,12 @@ try{
 
 
 function displayLogin(){
+    const trueIframeSrc = "https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec";
+    const testIframeSrc = "./test/loginButton.html";
     let LoginButton = document.createElement('iframe');
-    LoginButton.src = "https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec";
+    LoginButton.allowtransparency = "true";
+    LoginButton.scrolling = "no";
+    LoginButton.src = trueIframeSrc;
     clearMain();
     MainElement.appendChild(LoginButton);
 }
