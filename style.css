@@ -74,3 +74,42 @@ html{
     height:100dvh;
     background-color: black;
 }
+
+#icon_preview{
+    border-radius: 10%;
+    border: none;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: min(256px,40dvw);
+    height: min(256px,40dvw);
+}
+
+#iconFrame{
+    width:100%;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+#edit_icon_button{
+    display: block;
+    position: absolute;
+    bottom: 0;
+    right: calc((100dvw - min(256px,40dvw))/2);
+    border: none;
+    background: transparent;
+    color: white;
+    text-shadow: 1px 2px 3px black;
+    font-size: calc(min(256px,40dvw)/6);
+}
+
+#edit_icon_button span{
+    vertical-align: middle;
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 48
+    
+}

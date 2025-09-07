@@ -289,16 +289,19 @@ async function displayForm(user_name,icon_src_url){
     const member_info = {};
 
     clearMain();
-    
+    const iconFrame = document.createElement("div");
+    iconFrame.id = "iconFrame";
     const iconElm = document.createElement('img');
     iconElm.src = icon_src_url || "src/img/noimage.jpg";
-    iconElm.width = 100;
-    iconElm.height = 100;
-    MainElement.appendChild(iconElm);
-    const edit_icon_button = document.createElement('button');
-    edit_icon_button.textContent = "アイコンを編集する";
-    edit_icon_button.onclick = () => {displayImageEditor(user_name,icon_src_url);};
-    MainElement.appendChild(edit_icon_button);
+    iconElm.id = "icon_preview";
+    iconFrame.appendChild(iconElm);
+    const edit_icon_span = document.createElement('span');
+    edit_icon_span.className = "material-symbols-outlined";
+    edit_icon_span.textContent = "edit_square";
+    iconFrame.appendChild(edit_icon_span);
+    edit_icon_span.id = "edit_icon_button";
+    edit_icon_span.onclick = () => {displayImageEditor(user_name,icon_src_url);};
+    MainElement.appendChild(iconFrame);
 
     const real_name_form = document.createElement('input');
     real_name_form.type = "text";
