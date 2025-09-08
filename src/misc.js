@@ -383,7 +383,8 @@ function displayImageEditor(user_name,icon_url){
         let y = (icon_canvas.height - scale*img_height)/2 + offsetY;
         x = climp(x,-img_width,img_width);
         y = climp(y,-img_height,img_height);
-        context.clearRect(0,0,icon_canvas.width,icon_canvas.height);
+        const largeEdge = Math.sqrt(img_width**2+img_height**2)+ Math.sqrt(icon_canvas.width**2+icon_canvas.height**2)+Math.sqrt(offsetX**2+offsetY**2);
+        context.clearRect(-largeEdge*2,-largeEdge*2,largeEdge*2,largeEdge*2);
         context.rotate(rotationAngle)
         context.drawImage(imgElem,x,y,scale*img_width,scale*img_height);
     }
