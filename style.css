@@ -32,7 +32,11 @@ iframe {
 }
 
 body{
-    position: relative;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
     height:100dvh;
     width:100dvw;
     margin: 0;
@@ -43,15 +47,16 @@ body{
     font-weight: 100;
     font-style: normal;
 }
-body:before{
+body::before{
     content: '';
     margin:  0;
     top:-15px;
     left:-15px;
     right:-15px;
     bottom:-15px;
-    position:absolute;
-    
+    position:fixed;
+    height : calc(100dvh + 30px);
+    width : calc(100dvw + 30px);
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: max(200vh,200vw);
@@ -61,6 +66,7 @@ body:before{
             brightness(0.5)
             blur(15px);
     z-index: -1;
+    overflow: hidden;
 }
 
 head{
@@ -72,12 +78,23 @@ head{
 
 main{
     width:100dvw;
-    overflow: auto;
+    overflow: hidden;
 }
 
 html{
     height:100dvh;
     background-color: black;
+}
+
+#formGrid{
+    width: 100dvw;
+    height: 100dvh;
+    overflow-y: auto;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 20%;
+    padding-right: 20%;
+    box-sizing: border-box;
 }
 
 #icon_preview{
@@ -91,7 +108,9 @@ html{
 }
 
 #iconFrame{
-    width:100%;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
     text-align: center;
     margin-bottom: 20px;
     position: relative;
@@ -101,7 +120,7 @@ html{
     display: block;
     position: absolute;
     bottom: 0;
-    right: calc((100dvw - min(256px,40dvw))/2);
+    right: 0;
     border: none;
     background: transparent;
     color: white;
@@ -120,7 +139,7 @@ html{
 }
 
 .formFrame{
-    width: 80%;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 20px;
@@ -140,13 +159,16 @@ html{
     font-size: 1.5em;
     border-radius: 10px;
     border: 0.5px solid #fff;
-    background-color: rgba(176, 165, 165, 0.2);
+    background-color: rgba(0, 0, 0, 0.2);
     color: white;
     padding-left: 10px;
     padding-right: 10px;
     box-sizing: border-box;
     width: auto;
     max-width: 100%;
+    margin-right: 0px;
+    margin-left: 0;
+    right:0;
 }
 .formInput:focus{
     outline: none;
@@ -161,9 +183,11 @@ html{
 
 .addedForm{
     display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
 }
 .addedFormFrame{
-    width: 80dvw;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 20px;
@@ -192,6 +216,15 @@ html{
     color: hsl(162, 100%, 66%);
     text-align: center;
     cursor: pointer;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    height: 50px;
+    width: min(200px,100%);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 100;
+    font-style: normal;
 }
 
 option{

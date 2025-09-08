@@ -315,6 +315,9 @@ function displayImageEditor(user_name,icon_url){
 }
 
 async function displayForm(user_name,icon_src_url){
+    const formGrid = document.createElement('div');
+    formGrid.id = "formGrid";
+    
     const member_info = {};
     clearHeader();
     clearMain();
@@ -331,7 +334,7 @@ async function displayForm(user_name,icon_src_url){
     edit_icon_span.id = "edit_icon_button";
     edit_icon_span.style.cursor = "pointer";
     edit_icon_span.onclick = () => {displayImageEditor(user_name,icon_src_url);};
-    MainElement.appendChild(iconFrame);
+    formGrid.appendChild(iconFrame);
 
 
     const furiganaFrame = document.createElement("div");
@@ -346,7 +349,7 @@ async function displayForm(user_name,icon_src_url){
     furigana_name_form.type = "text";
     furigana_name_form.value = my_info.furigana || "";
     furiganaFrame.appendChild(furigana_name_form);
-    MainElement.appendChild(furiganaFrame);
+    formGrid.appendChild(furiganaFrame);
     
     const nameFrame = document.createElement("div");
     nameFrame.className = "formFrame";
@@ -361,7 +364,7 @@ async function displayForm(user_name,icon_src_url){
     real_name_form.value = user_name;
     real_name_form.required = true;
     nameFrame.appendChild(real_name_form);
-    MainElement.appendChild(nameFrame);
+    formGrid.appendChild(nameFrame);
     
 
     const nick_nameFrame = document.createElement("div");
@@ -376,7 +379,7 @@ async function displayForm(user_name,icon_src_url){
     nick_name_form.type = "text";
     nick_name_form.value = my_info.nick_name || "";
     nick_nameFrame.appendChild(nick_name_form);
-    MainElement.appendChild(nick_nameFrame);
+    formGrid.appendChild(nick_nameFrame);
     
     const generation_frame = document.createElement("div");
     generation_frame.className = "formFrame";
@@ -397,7 +400,7 @@ async function displayForm(user_name,icon_src_url){
     generation_frame.appendChild(generation_form);
     generation_frame.appendChild(generation_label);
     generation_frame.style.justifyContent = "left";
-    MainElement.appendChild(generation_frame);
+    formGrid.appendChild(generation_frame);
 
     const universityFrame = document.createElement("div");
     universityFrame.className = "formFrame";
@@ -411,7 +414,7 @@ async function displayForm(user_name,icon_src_url){
     university_form.type = "text";
     university_form.value = my_info.university || "";
     universityFrame.appendChild(university_form);
-    MainElement.appendChild(universityFrame);
+    formGrid.appendChild(universityFrame);
 
     const mejorFrame = document.createElement("div");
     mejorFrame.className = "formFrame";
@@ -425,7 +428,7 @@ async function displayForm(user_name,icon_src_url){
     major_form.type = "text";
     major_form.value = my_info.major || "";
     mejorFrame.appendChild(major_form);
-    MainElement.appendChild(mejorFrame);
+    formGrid.appendChild(mejorFrame);
 
     const gradeFrame = document.createElement("div");
     gradeFrame.className = "formFrame";
@@ -447,7 +450,7 @@ async function displayForm(user_name,icon_src_url){
     grade_form.id = "grade_form";
     grade_form.className = "formInput";
     gradeFrame.appendChild(grade_form);
-    MainElement.appendChild(gradeFrame);
+    formGrid.appendChild(gradeFrame);
 
     const hobbyFrame = document.createElement("div");
     hobbyFrame.className = "formFrame";
@@ -462,11 +465,11 @@ async function displayForm(user_name,icon_src_url){
     hobby_form.id = "hobby_form";
     hobby_form.className = "formInput";
     hobbyFrame.appendChild(hobby_form);
-    MainElement.appendChild(hobbyFrame);
+    formGrid.appendChild(hobbyFrame);
 
     const addedDivsFrame = document.createElement("div");
     addedDivsFrame.className = "addedFormFrame";
-    MainElement.appendChild(addedDivsFrame);
+    formGrid.appendChild(addedDivsFrame);
 
     const add_button = document.createElement('button');
     add_button.textContent = "質問項目の追加";
@@ -475,7 +478,7 @@ async function displayForm(user_name,icon_src_url){
     add_button.style.marginLeft = "auto";
     add_button.style.marginRight = "auto";
     add_button.onclick = () => {add_index(addedDivsFrame);};
-    MainElement.appendChild(add_button);
+    formGrid.appendChild(add_button);
 
     for (const qanda of Object.entries(my_info.add_questions || {})){
         add_index(addedDivsFrame,[qanda[0],qanda[1]]);
@@ -574,7 +577,7 @@ async function displayForm(user_name,icon_src_url){
         /*const decrypted_data = CryptoJS.AES.decrypt(encrypted_data,"testkey").toString(CryptoJS.enc.Utf8);
         console.log(decrypted_data);*/
     }
-    MainElement.appendChild(submit_button);
+    formGrid.appendChild(submit_button);
 
     const cancel_button = document.createElement('span');
     cancel_button.className = "material-symbols-outlined cancelButton";
@@ -585,7 +588,8 @@ async function displayForm(user_name,icon_src_url){
     const noteElm = document.createElement('p');
     noteElm.textContent = "※プロフィール変更の反映には数分かかります。";
     noteElm.className = "noteText";
-    MainElement.appendChild(noteElm);
+    formGrid.appendChild(noteElm);
+    MainElement.appendChild(formGrid);
 }
 
 function clearMain(){
