@@ -1,4 +1,4 @@
-const testMode = false;
+const testMode = true;
 
 const BodyElement = document.getElementsByTagName('body')[0];
 const HeaderElement = document.getElementsByTagName('header')[0];
@@ -8,6 +8,9 @@ let userHash = "000000";
 let hashList = [];
 let AES_Key;
 let my_info = {};
+
+const evCache = [];
+
 
 window.addEventListener('message',function(e){
     switch (e.data.action){
@@ -139,7 +142,64 @@ function displayLogin(){
 
 }
 
+function pointerdownHandler(ev){
+    ev.preventDefault();
+    if (evCache.length <= 2){
+        evCache.push(ev);
+    }
+}
 
+function removePointer(ev){
+    const index = evCache.findIndex((e) => e.pointerId == ev.pointerId);
+    evCache.splice(index,1);
+}
+
+function pointerupHandler(ev){
+    ev.preventDefault();
+    removePointer(ev);
+}
+
+function pointermoveHandler(ev){
+    ev.preventDefault();
+    const preCord = [];
+    for (const e of evCache){
+        preCord.push([e.offsetX,e.offsetY]);
+    }
+
+    const index = evCache.findIndex((e) => e.pointerId == ev.pointerId);
+    if (index >= 0){
+        evCache[index] = ev;
+    }
+
+    const newCord = [];
+    for (const e of evCache){
+        newCord.push([e.offsetX,e.offsetY]);
+    }
+
+    if (preCord.length == 2 && newCord.length == 2){
+        const preG = [];
+        const newG = [];
+        preG.push((preCord[0][0]+preCord[1][0])/2);
+        preG.push((preCord[0][1]+preCord[1][1])/2);
+        newG.push((newCord[0][0]+newCord[1][0])/2);
+        newG.push((newCord[0][1]+newCord[1][1])/2);
+        const preVec = [preCord[1][0]-preCord[0][0],preCord[1][1]-preCord[0][1]];
+        const newVec = [newCord[1][0]-newCord[0][0],newCord[1][1]-newCord[0][1]];
+        const scale = Math.sqrt((newVec[0]**2+newVec[1]**2)/(preVec[0]**2+preVec[1]**2));
+        const theta = Math.atan2(newVec[1],newVec[0]) - Math.atan2(preVec[1],preVec[0]);
+        return [scale,theta,subVec(newG,orthogonalProjetion(scale,theta,preG))];
+    }else if (preCord.length == 1 && newCord.length == 1){
+        return [1,0,[newCord[0][0]-preCord[0][0],newCord[0][1]-preCord[0][1]]];
+    }else{
+        return [1,0,[0,0]];
+    }
+}
+function orthogonalProjetion(scale,theta,vec){
+    return [scale*Math.cos(theta)*vec[0]-scale*Math.sin(theta)*vec[1],scale*Math.sin(theta)*vec[0]+scale*Math.cos(theta)*vec[1]];
+}
+function subVec(a,b){
+    return [a[0]-b[0],a[1]-b[1]];
+}
 
 function displayImageEditor(user_name,icon_url){
     clearHeader();
@@ -157,6 +217,7 @@ function displayImageEditor(user_name,icon_url){
     let isDragging = false;
     let startX,startY;
     let scale = 1;
+    let rotationAngle = 0;
     icon_canvas.width = squere_length;
     icon_canvas.height = squere_length;
     icon_background.style.width = `${squere_length}px`;
@@ -200,7 +261,20 @@ function displayImageEditor(user_name,icon_url){
     });
     file_select_button.appendChild(file_selector);
 
-    icon_canvas.addEventListener('mousedown',(e)=>{
+    icon_canvas.onpointerdown = pointerdownHandler;
+    icon_canvas.onpointerup = pointerupHandler;
+    icon_canvas.onpointercancel = pointerupHandler;
+    icon_canvas.onpointerout = pointerupHandler;
+    icon_canvas.onpointerleave = pointerupHandler;
+    icon_canvas.onpointermove = (e) => {
+        const transInfo = pointermoveHandler(e);
+        scale = transInfo[0]*scale;
+        offsetX += transInfo[2][0];
+        offsetY += transInfo[2][1];
+        rotationAngle += transInfo[1];
+        drawImage();
+    }
+    /*icon_canvas.addEventListener('mousedown',(e)=>{
         isDragging = true;
         startX = e.offsetX - offsetX;
         startY = e.offsetY - offsetY;
@@ -231,7 +305,7 @@ function displayImageEditor(user_name,icon_url){
     icon_canvas.addEventListener('mouseup',()=>{isDragging=false; icon_canvas.style.cursor = "grab";});
     icon_canvas.addEventListener('touchend',()=>isDragging=false);
     icon_canvas.addEventListener('touchcancel',()=>isDragging=false);
-    
+    */
     icon_canvas.addEventListener('wheel',(e)=>{
         e.preventDefault();
         scale += -e.deltaY*0.0005;
@@ -310,6 +384,7 @@ function displayImageEditor(user_name,icon_url){
         x = climp(x,-img_width,img_width);
         y = climp(y,-img_height,img_height);
         context.clearRect(0,0,icon_canvas.width,icon_canvas.height);
+        context.rotate(rotationAngle)
         context.drawImage(imgElem,x,y,scale*img_width,scale*img_height);
     }
 }
@@ -400,6 +475,7 @@ async function displayForm(user_name,icon_src_url){
     generation_frame.appendChild(generation_form);
     generation_frame.appendChild(generation_label);
     generation_frame.style.justifyContent = "left";
+    generation_form.style.marginRight = "10px";
     formGrid.appendChild(generation_frame);
 
     const universityFrame = document.createElement("div");
