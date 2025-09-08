@@ -145,8 +145,13 @@ function displayImageEditor(user_name,icon_url){
     clearHeader();
     clearMain();
     let icon_src = icon_url;
+    const icon_background = document.createElement('div');
+    icon_background.id = "icon_background";
+    MainElement.appendChild(icon_background);
     const icon_canvas = document.createElement('canvas');
-    let squere_length = Math.min(200,window.innerWidth);
+    icon_canvas.id = "icon_canvas";
+    icon_canvas.style.cursor = "grab";
+    let squere_length = Math.min(256,window.innerWidth);
     let offsetX = 0;
     let offsetY = 0;
     let isDragging = false;
@@ -154,6 +159,8 @@ function displayImageEditor(user_name,icon_url){
     let scale = 1;
     icon_canvas.width = squere_length;
     icon_canvas.height = squere_length;
+    icon_background.style.width = `${squere_length}px`;
+    icon_background.style.height = `${squere_length}px`;
 
     
 
@@ -171,9 +178,17 @@ function displayImageEditor(user_name,icon_url){
 
     const file_select_button = document.createElement('label');
     file_select_button.textContent = "画像の変更";
+    file_select_button.className = "nomalButton";
+    file_select_button.style.display = "block";
+    file_select_button.style.marginLeft = "auto";
+    file_select_button.style.marginRight = "auto";
+    file_select_button.style.width = "fit-content";
+    file_select_button.style.paddingLeft = "10%";
+    file_select_button.style.paddingRight = "10%";
+    file_select_button.style.marginBottom = "30px";
     const file_selector = document.createElement('input');
     file_selector.type = "file";
-    file_selector.accept = ".png,.jpeg,.jpg,.HEIC"
+    file_selector.accept = ".png,.jpeg,.jpg,.HEIC,.tiff"
     file_selector.style.display = "none";
     file_selector.addEventListener("change",(e) => {
         const image_file = e.target.files;
@@ -189,6 +204,7 @@ function displayImageEditor(user_name,icon_url){
         isDragging = true;
         startX = e.offsetX - offsetX;
         startY = e.offsetY - offsetY;
+        icon_canvas.style.cursor = "grabbing";
     });
     icon_canvas.addEventListener('touchstart',(e)=>{
         e.preventDefault();
@@ -211,8 +227,8 @@ function displayImageEditor(user_name,icon_url){
             drawImage();
         }
     });
-    icon_canvas.addEventListener('mouseleave',()=> isDragging = false);
-    icon_canvas.addEventListener('mouseup',()=>isDragging=false);
+    icon_canvas.addEventListener('mouseleave',()=> {isDragging = false; icon_canvas.style.cursor = "grab";});
+    icon_canvas.addEventListener('mouseup',()=>{isDragging=false; icon_canvas.style.cursor = "grab";});
     icon_canvas.addEventListener('touchend',()=>isDragging=false);
     icon_canvas.addEventListener('touchcancel',()=>isDragging=false);
     
@@ -225,11 +241,15 @@ function displayImageEditor(user_name,icon_url){
         drawImage();
     })
 
-    MainElement.appendChild(icon_canvas);
+    icon_background.appendChild(icon_canvas);
     MainElement.appendChild(file_select_button);
 
     const confirm_button = document.createElement('button');
     confirm_button.textContent = "決定";
+    confirm_button.className = "greenButton";
+    confirm_button.style.display = "block";
+    confirm_button.style.marginLeft = "auto";
+    confirm_button.style.marginRight = "auto";
     confirm_button.onclick = async () => {
         const imageData = icon_canvas.toDataURL('image/jpeg',0.9);
 
@@ -309,6 +329,7 @@ async function displayForm(user_name,icon_src_url){
     edit_icon_span.textContent = "edit_square";
     iconFrame.appendChild(edit_icon_span);
     edit_icon_span.id = "edit_icon_button";
+    edit_icon_span.style.cursor = "pointer";
     edit_icon_span.onclick = () => {displayImageEditor(user_name,icon_src_url);};
     MainElement.appendChild(iconFrame);
 
@@ -414,6 +435,7 @@ async function displayForm(user_name,icon_src_url){
     gradeFrame.appendChild(gradeLabel);
     
     const grade_form = document.createElement('select');
+    grade_form.className = "formInput";
     const grade_list = ["学部1年","学部2年","学部3年","学部4年","学部5年","学部6年","修士1年","修士2年","博士1年","博士2年","博士3年","博士4年","記載しない"];
     for (let list of grade_list){
         const list_elm = document.createElement('option');
@@ -448,6 +470,10 @@ async function displayForm(user_name,icon_src_url){
 
     const add_button = document.createElement('button');
     add_button.textContent = "質問項目の追加";
+    add_button.className = "nomalButton";
+    add_button.style.display = "block";
+    add_button.style.marginLeft = "auto";
+    add_button.style.marginRight = "auto";
     add_button.onclick = () => {add_index(addedDivsFrame);};
     MainElement.appendChild(add_button);
 
@@ -457,6 +483,10 @@ async function displayForm(user_name,icon_src_url){
 
     const submit_button = document.createElement('button');
     submit_button.textContent = "保存";
+    submit_button.className = "greenButton";
+    submit_button.style.display = "block";
+    submit_button.style.marginLeft = "auto";
+    submit_button.style.marginRight = "auto";
     submit_button.onclick = async () => {
         
         /*const icon_upload_response = await new Promise((resolve,reject) => {
