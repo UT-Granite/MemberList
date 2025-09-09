@@ -1,4 +1,4 @@
-const testMode = true;
+const testMode = false;
 
 const BodyElement = document.getElementsByTagName('body')[0];
 const HeaderElement = document.getElementsByTagName('header')[0];
@@ -696,9 +696,13 @@ async function testDisplayList(){
 
 function displayList_onlyMain(){
     clearMain();
+    const MemberPanels = document.createElement('div');
+    MemberPanels.id = "MemberPanels";
+    
     for (const memberHash of hashList){
-        addMemberPanel(memberHash);
+        addMemberPanel(memberHash,MemberPanels);
     }
+    MainElement.appendChild(MemberPanels);
 }
 
 function displayList(user_name,icon_url){
@@ -706,7 +710,7 @@ function displayList(user_name,icon_url){
     displayList_onlyMain();
 }
 
-function addMemberPanel(memberHash){
+function addMemberPanel(memberHash,MemberPanels){
     try{
         fetch(`./data/${memberHash}`).then((response) => {
             return(response.text());
@@ -714,40 +718,53 @@ function addMemberPanel(memberHash){
             console.log(CryptoJS.AES.decrypt(data,AES_Key).toString(CryptoJS.enc.Utf8));
             const member_info = JSON.parse(CryptoJS.AES.decrypt(data,AES_Key).toString(CryptoJS.enc.Utf8));
             const member_panel = document.createElement('div');
+            const icon_and_name = document.createElement('div');
+            icon_and_name.className = "icon_and_name";
             const member_icon = document.createElement('img');
             member_icon.src = member_info.icon_url || "src/img/noimage.jpg";
+            member_panel.className = "memberPanel";
+            member_icon.className = "memberIcon";
             member_icon.width = 100;
             member_icon.height = 100;
-            member_panel.appendChild(member_icon);
+            icon_and_name.appendChild(member_icon);
+            const furigana_and_name = document.createElement('div');
+            const allnames = document.createElement('div');
+            allnames.className = "allnames";
+            furigana_and_name.className = "furigana_and_name";
             const member_furigana = document.createElement('p');
             member_furigana.textContent = member_info.furigana || "";
-            member_panel.appendChild(member_furigana);
+            furigana_and_name.appendChild(member_furigana);
             const member_name = document.createElement('p');
             member_name.textContent = member_info.name;
-            member_panel.appendChild(member_name);
-            MainElement.appendChild(member_panel);
+            furigana_and_name.appendChild(member_name);
+            allnames.appendChild(furigana_and_name);
+            MemberPanels.appendChild(member_panel);
 
             if(member_info.nick_name){
                 const member_nick_name = document.createElement('p');
                 member_nick_name.textContent = `(${member_info.nick_name})`;
-                member_panel.appendChild(member_nick_name);
+                allnames.appendChild(member_nick_name);
             }
-
+            icon_and_name.appendChild(allnames);
+            member_panel.appendChild(icon_and_name);
             const member_generation = document.createElement('p');
             member_generation.textContent = `${member_info.roll_in_year - 2017}期`;
             member_panel.appendChild(member_generation);
 
+            const universityInfo = document.createElement('div');
+            universityInfo.className = "universityInfo";
+            member_panel.appendChild(universityInfo);
             const member_university = document.createElement('p');
             member_university.textContent = member_info.university || "";
-            member_panel.appendChild(member_university);
+            universityInfo.appendChild(member_university);
 
             const member_major = document.createElement('p');
             member_major.textContent = member_info.major || "";
-            member_panel.appendChild(member_major);
+            universityInfo.appendChild(member_major);
 
             const member_grade = document.createElement('p');
             member_grade.textContent = member_info.grade || "";
-            member_panel.appendChild(member_grade);
+            universityInfo.appendChild(member_grade);
 
             const member_hobby = document.createElement('p');
             member_hobby.textContent = `趣味:${member_info.hobby || ""}`;
@@ -759,7 +776,7 @@ function addMemberPanel(memberHash){
                 member_panel.appendChild(qanda_elem);
             }
 
-            MainElement.appendChild(member_panel);
+            //MainElement.appendChild(member_panel);
         });
     }catch(e){
     

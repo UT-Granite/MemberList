@@ -241,3 +241,46 @@ option{
     margin-bottom: 20px;
 }
 
+#MemberPanels{
+    color: white;
+    overflow: auto;
+    height: 100dvh;
+    width: 100%;
+    padding-left: 5%;
+    padding-right: 5%;
+    box-sizing: border-box;
+    padding-bottom: 20px;
+}
+
+.memberPanel{
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    border: 1px solid hsl(162, 100%, 66%);
+}
+
+.memberIcon{
+    border-radius: 10%;
+    border: none;
+    display: block;
+    width: min(256px,30dvw);
+    height: min(256px,30dvw);
+}
+
+.icon_and_name{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.allnames{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.universityInfo{
+    display: flex;
+    flex-wrap: wrap;
+}
