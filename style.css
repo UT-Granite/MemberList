@@ -268,19 +268,38 @@ option{
     display: block;
     width: min(256px,30dvw);
     height: min(256px,30dvw);
+    margin: 10px;
 }
 
 .icon_and_name{
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .allnames{
     display: flex;
     flex-wrap: wrap;
+    color: hsl(162, 100%, 66%);
 }
 
 .universityInfo{
     display: flex;
     flex-wrap: wrap;
+}
+
+p{
+    display: block;
+    margin-top: 0em;
+    margin-bottom: 1em;
+}
+
+.furigana_and_name{
+    font-size: 20px;
+}
+
+.nickName{
+    font-size: 20px;
+    position: relative;
+    top:4px;
 }

@@ -727,21 +727,21 @@ function addMemberPanel(memberHash,MemberPanels){
             member_icon.width = 100;
             member_icon.height = 100;
             icon_and_name.appendChild(member_icon);
-            const furigana_and_name = document.createElement('div');
+            const furigana_and_name = document.createElement('ruby');
             const allnames = document.createElement('div');
             allnames.className = "allnames";
             furigana_and_name.className = "furigana_and_name";
-            const member_furigana = document.createElement('p');
+            const member_furigana = document.createElement('rt');
+            member_furigana.className = "furigana";
             member_furigana.textContent = member_info.furigana || "";
+            furigana_and_name.textContent = member_info.name;
             furigana_and_name.appendChild(member_furigana);
-            const member_name = document.createElement('p');
-            member_name.textContent = member_info.name;
-            furigana_and_name.appendChild(member_name);
             allnames.appendChild(furigana_and_name);
             MemberPanels.appendChild(member_panel);
 
             if(member_info.nick_name){
                 const member_nick_name = document.createElement('p');
+                member_nick_name.className = "nickName";
                 member_nick_name.textContent = `(${member_info.nick_name})`;
                 allnames.appendChild(member_nick_name);
             }
@@ -767,12 +767,12 @@ function addMemberPanel(memberHash,MemberPanels){
             universityInfo.appendChild(member_grade);
 
             const member_hobby = document.createElement('p');
-            member_hobby.textContent = `趣味:${member_info.hobby || ""}`;
+            member_hobby.textContent = `趣味：${member_info.hobby || ""}`;
             member_panel.appendChild(member_hobby); 
 
             for (const qanda of Object.entries(member_info.add_questions || {})){
                 const qanda_elem = document.createElement('p');
-                qanda_elem.textContent = `${qanda[0]}: ${qanda[1]}`;
+                qanda_elem.textContent = `${qanda[0]}：${qanda[1]}`;
                 member_panel.appendChild(qanda_elem);
             }
 
