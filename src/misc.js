@@ -1,4 +1,4 @@
-const testMode = false;
+const testMode = true;
 
 const BodyElement = document.getElementsByTagName('body')[0];
 const HeaderElement = document.getElementsByTagName('header')[0];
@@ -384,7 +384,7 @@ function displayImageEditor(user_name,icon_url){
         x = climp(x,-img_width,img_width);
         y = climp(y,-img_height,img_height);
         const largeEdge = Math.sqrt(img_width**2+img_height**2)+ Math.sqrt(icon_canvas.width**2+icon_canvas.height**2)+Math.sqrt(offsetX**2+offsetY**2);
-        context.clearRect(-largeEdge*2,-largeEdge*2,largeEdge*2,largeEdge*2);
+        context.clearRect(-largeEdge*2,-largeEdge*2,largeEdge*4,largeEdge*4);
         context.rotate(rotationAngle)
         context.drawImage(imgElem,x,y,scale*img_width,scale*img_height);
     }
@@ -698,7 +698,7 @@ function displayList_onlyMain(){
     clearMain();
     const MemberPanels = document.createElement('div');
     MemberPanels.id = "MemberPanels";
-    
+    hashList = hashList.sort(() => Math.random()-0.5);
     for (const memberHash of hashList){
         addMemberPanel(memberHash,MemberPanels);
     }

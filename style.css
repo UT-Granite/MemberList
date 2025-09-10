@@ -69,12 +69,13 @@ body::before{
     overflow: hidden;
 }
 
-head{
-    height: 10px;
+header{
+    height: auto;
     width:100vw;
-    background-color: aqua;
-    position: absolute;
+    background-color: hsl(162, 100%, 66%);
+    position: fixed;
 }
+
 
 main{
     width:100dvw;
@@ -95,6 +96,7 @@ html{
     padding-left: 10%;
     padding-right: 10%;
     box-sizing: border-box;
+    margin-top: 30px;
 }
 
 #icon_preview{
@@ -239,6 +241,7 @@ option{
     margin-right: auto;
     border: 5px solid hsl(162, 100%, 66%);
     margin-bottom: 20px;
+    margin-top: 50px;
 }
 
 #MemberPanels{
@@ -250,6 +253,7 @@ option{
     padding-right: 5%;
     box-sizing: border-box;
     padding-bottom: 20px;
+    margin-top: 30px;
 }
 
 .memberPanel{
@@ -302,4 +306,17 @@ p{
     font-size: 20px;
     position: relative;
     top:4px;
+}
+
+header button {
+    background: white;
+    border: 1px solid black;
+    border-radius: 100vh;
+    color: black;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 100;
+    font-style: normal;
+    margin-bottom: 1px;
+    margin-left: 3px;
 }
