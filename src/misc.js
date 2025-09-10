@@ -385,7 +385,7 @@ function displayImageEditor(user_name,icon_url){
         y = climp(y,-img_height,img_height);
         const largeEdge = Math.sqrt(img_width**2+img_height**2)+ Math.sqrt(icon_canvas.width**2+icon_canvas.height**2)+Math.sqrt(offsetX**2+offsetY**2);
         context.clearRect(-largeEdge*2,-largeEdge*2,largeEdge*4,largeEdge*4);
-        context.rotate(rotationAngle)
+        //context.rotate(rotationAngle)
         context.drawImage(imgElem,x,y,scale*img_width,scale*img_height);
     }
 }
