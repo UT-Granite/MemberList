@@ -92,7 +92,7 @@ html{
     height: 100dvh;
     overflow-y: auto;
     padding-top: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 100px;
     padding-left: 10%;
     padding-right: 10%;
     box-sizing: border-box;
@@ -116,6 +116,10 @@ html{
     text-align: center;
     margin-bottom: 20px;
     position: relative;
+}
+
+#icon_canvas{
+    touch-action: none;
 }
 
 #edit_icon_button{
@@ -150,6 +154,17 @@ html{
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 100;
+    font-style: normal;
+}
+
+.formFrame input{
+    font-family: 'Noto Sans JP', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
 }
 
 .formFrame label{
@@ -179,7 +194,7 @@ html{
 
 .noteText{
     color: white;
-    text-align: center;
+    text-align: left;
     
 }
 
@@ -210,6 +225,13 @@ html{
     color: white;
     text-align: center;
     cursor: pointer;
+    font-size: 20px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 100;
+    font-style: normal;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
 .greenButton{
@@ -221,7 +243,7 @@ html{
     cursor: pointer;
     margin-top: 20px;
     margin-bottom: 20px;
-    font-size: 15px;
+    font-size: 20px;
     height: 50px;
     width: min(200px,100%);
     font-family: 'Noto Sans JP', sans-serif;
@@ -233,6 +255,18 @@ html{
 option{
     background-color: #333;
     color: white;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+
+}
+
+select{
+    font-family: 'Noto Sans JP', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
 }
 
 #icon_background{
@@ -297,6 +331,7 @@ p{
     display: block;
     margin-top: 0em;
     margin-bottom: 1em;
+    text-align: left;
 }
 
 .furigana_and_name{
@@ -338,4 +373,26 @@ header button {
     'wght' 400,
     'GRAD' 0,
     'opsz' 48
+}
+
+#QaddB{
+    margin-bottom: 20px;
+}
+
+footer{
+    z-index: 4;
+    position: fixed;
+    bottom: 0;
+    margin-bottom: 0;
+    width: 100dvw;
+}
+
+footer p{
+    margin-bottom: 3px;
+    color: white;
+    font-size: 9px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    text-align: center;
 }

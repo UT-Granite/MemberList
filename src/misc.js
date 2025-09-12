@@ -554,11 +554,17 @@ async function displayForm(user_name,icon_src_url){
     const add_button = document.createElement('button');
     add_button.textContent = "質問項目の追加";
     add_button.className = "nomalButton";
+    add_button.id = "QaddB"
     add_button.style.display = "block";
     add_button.style.marginLeft = "auto";
     add_button.style.marginRight = "auto";
     add_button.onclick = () => {add_index(addedDivsFrame);};
     formGrid.appendChild(add_button);
+
+    const exQ = document.createElement("p");
+    exQ.textContent = "e.g. 高校のときの部活、よく行くジム、好きなホールド・ムーブ";
+    formGrid.appendChild(exQ);
+    exQ.className = "noteText";
 
     for (const qanda of Object.entries(my_info.add_questions || {})){
         add_index(addedDivsFrame,[qanda[0],qanda[1]]);
@@ -611,6 +617,9 @@ async function displayForm(user_name,icon_src_url){
             add_questions[addedForm.children[0].value] = addedForm.children[1].value;
         }
         member_info.add_questions = add_questions;
+
+        
+
         const json_data = JSON.stringify(member_info);
         const encrypted_data = CryptoJS.AES.encrypt(json_data,AES_Key).toString();
         
