@@ -1,4 +1,4 @@
-const testMode = true;
+const testMode = false;
 
 const BodyElement = document.getElementsByTagName('body')[0];
 const HeaderElement = document.getElementsByTagName('header')[0];
@@ -92,8 +92,11 @@ function clearHeader(){
 
 function displayEditProfileButton(name,icon_url){
     clearHeader();
-    const user_nameElem = document.createElement('button');
-    user_nameElem.textContent = `${name}さんのプロフィールを記入する。`;
+    const user_nameElem = document.createElement('span');
+    //user_nameElem.textContent = `${name}さんのプロフィールを記入する。`;
+    user_nameElem.textContent = "person_edit";
+    user_nameElem.id = "editProfile";
+    user_nameElem.className = "material-symbols-outlined";
     user_nameElem.onclick = () => {displayForm(name,icon_url);};
     HeaderElement.appendChild(user_nameElem);
 }

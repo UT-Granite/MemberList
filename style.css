@@ -70,7 +70,7 @@ body::before{
 }
 
 header{
-    height: auto;
+    height: 0;
     width:100vw;
     background-color: hsl(162, 100%, 66%);
     position: fixed;
@@ -198,6 +198,7 @@ html{
 }
 
 .cancelButton{
+    font-size: 45px;
     color: #ff6689;
     cursor: pointer;
 }
@@ -213,7 +214,7 @@ html{
 
 .greenButton{
     background-color: rgba(0,0,0,0.2);
-    border: 1px solid hsl(162, 100%, 66%);
+    border: 1px solid rgb(82, 255, 203);
     border-radius: 100vh;
     color: hsl(162, 100%, 66%);
     text-align: center;
@@ -253,7 +254,7 @@ option{
     padding-right: 5%;
     box-sizing: border-box;
     padding-bottom: 20px;
-    margin-top: 30px;
+    margin-top: 0px;
 }
 
 .memberPanel{
@@ -319,4 +320,22 @@ header button {
     font-style: normal;
     margin-bottom: 1px;
     margin-left: 3px;
+}
+
+#editProfile{
+    color: white;
+    position: fixed;
+    cursor: pointer;
+    font-size: min(100px,20dvw);
+    background-color: rgba(0, 0, 0,0.2);
+    border : 3px solid white;
+    border-radius: 100%;
+    z-index: 5;
+    bottom: calc(0.2*min(100px,20dvw));
+    right: calc(0.2*min(100px,20dvw));
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 48
 }
