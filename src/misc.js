@@ -271,7 +271,7 @@ function displayImageEditor(user_name,icon_url){
         scale = transInfo[0]*scale;
         offsetX += transInfo[2][0];
         offsetY += transInfo[2][1];
-        rotationAngle += transInfo[1];
+        rotationAngle = transInfo[1];
         drawImage();
     }
     /*icon_canvas.addEventListener('mousedown',(e)=>{
@@ -356,12 +356,12 @@ function displayImageEditor(user_name,icon_url){
                 }
                 else{
                     console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
-                    alert(`サーバーエラーにより保存できませんでした。:${data.error}`);
+                    alert(`サーバーエラーにより保存できませんでした。:${data.error}\nログインしなおしてください。`);
                 }
             })
         }catch (e){
             console.log(`アップロードに問題がありました。:${e.message}`);
-            alert(`アップロードに問題がありました。:${e.message}`);
+            alert(`アップロードに問題がありました。:${e.message}\nログインしなおしてください。`);
         }
         }
         displayForm(user_name,icon_src);
@@ -385,7 +385,7 @@ function displayImageEditor(user_name,icon_url){
         y = climp(y,-img_height,img_height);
         const largeEdge = Math.sqrt(img_width**2+img_height**2)+ Math.sqrt(icon_canvas.width**2+icon_canvas.height**2)+Math.sqrt(offsetX**2+offsetY**2);
         context.clearRect(-largeEdge*2,-largeEdge*2,largeEdge*4,largeEdge*4);
-        //context.rotate(rotationAngle)
+        context.rotate(rotationAngle)
         context.drawImage(imgElem,x,y,scale*img_width,scale*img_height);
     }
 }
@@ -638,16 +638,16 @@ async function displayForm(user_name,icon_src_url){
                     alert("保存しました。");
                 }else{
                     console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
-                    alert(`サーバーエラーにより保存できませんでした。:${data.error}`);
+                    alert(`サーバーエラーにより保存できませんでした。:${data.error}\nログインしなおしてください。`);
                 }
             }).catch((e) => {
                 console.log(`クライアントエラーにより保存できませんでした。:${e.message}`);
-                alert(`クライアントエラーにより保存できませんでした。:${e.message}`);
+                alert(`クライアントエラーにより保存できませんでした。:${e.message}\nログインしなおしてください。`);
                 //alert("保存しました。");
             });
         }catch (e){
             console.log(`アップロードに問題がありました。:${e.message}`);
-            alert(`アップロードに問題がありました。:${e.message}`);
+            alert(`アップロードに問題がありました。:${e.message}\nログインしなおしてください。`);
         }
         }
         displayList(member_info.name,member_info.icon_url);
