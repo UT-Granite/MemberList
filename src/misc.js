@@ -356,18 +356,27 @@ function displayImageEditor(user_name,icon_url){
                 if (data.ok){
                     icon_src = data.url;
                     alert("保存しました。\n全体の編集画面からも保存してください。");
+                    return true;
                 }
                 else{
                     console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
                     alert(`サーバーエラーにより保存できませんでした。:${data.error}\nログインしなおしてください。`);
+                    return false;
+                }
+            }).then((ok)=>{
+                if(ok){
+                    displayForm(user_name,icon_src);
+                }else{
+                    displayLogin();
                 }
             })
         }catch (e){
             console.log(`アップロードに問題がありました。:${e.message}`);
             alert(`アップロードに問題がありました。:${e.message}\nログインしなおしてください。`);
+            displayLogin();
         }
         }
-        displayForm(user_name,icon_src);
+        
     }
 
     MainElement.appendChild(confirm_button);
@@ -648,21 +657,30 @@ async function displayForm(user_name,icon_src_url){
                 if (data.ok){
                     console.log("ユーザーデータ保存");
                     alert("保存しました。");
+                    return true;
                 }else{
                     console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
                     alert(`サーバーエラーにより保存できませんでした。:${data.error}\nログインしなおしてください。`);
+                    return false;
                 }
             }).catch((e) => {
                 console.log(`クライアントエラーにより保存できませんでした。:${e.message}`);
                 alert(`クライアントエラーにより保存できませんでした。:${e.message}\nログインしなおしてください。`);
-                //alert("保存しました。");
+                displayLogin();
+            }).then((ok)=>{
+                if(ok){
+                    displayList(member_info.name,member_info.icon_url);
+                }else{
+                    displayLogin();
+                }
             });
         }catch (e){
             console.log(`アップロードに問題がありました。:${e.message}`);
             alert(`アップロードに問題がありました。:${e.message}\nログインしなおしてください。`);
+            displayLogin();
         }
         }
-        displayList(member_info.name,member_info.icon_url);
+        
         /*const decrypted_data = CryptoJS.AES.decrypt(encrypted_data,"testkey").toString(CryptoJS.enc.Utf8);
         console.log(decrypted_data);*/
     }
