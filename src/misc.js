@@ -605,25 +605,65 @@ async function displayForm(user_name,icon_src_url){
 
         
         
-
-        member_info.name = real_name_form.value;
-        member_info.furigana = furigana_name_form.value;
+        if(real_name_form.value == ""){
+            alert("名前を入力してください。");
+            return 0;
+        }else{
+            member_info.name = real_name_form.value;
+        }
+        if(furigana_name_form.value == ""){
+            alert("フリガナを入力してください。");
+            return 0;
+        }else{
+            member_info.furigana = furigana_name_form.value;
+        }
         member_info.nick_name = nick_name_form.value;
         member_info.roll_in_year = parseInt(generation_form.value) + 2017;
-        member_info.university = university_form.value;
-        member_info.major = major_form.value;
+        if(university_form.value == ""){
+            alert("大学名を入力してください。");
+            return 0;
+        }else{
+            member_info.university = university_form.value;
+        }
+        if(major_form.value == ""){
+            alert("学部/学科等を入力してください。");
+            return 0;
+        }else{
+            member_info.major = major_form.value;
+        }
         if (member_info.grade === "記載しない"){
             member_info.grade = "";
         }else{
             member_info.grade = grade_form.value;
         }
-        member_info.hobby = hobby_form.value;
+        if(hobby_form.value == ""){
+            alert("趣味を入力してください。");
+            return 0;
+        }else{
+            member_info.hobby = hobby_form.value;
+        }
         member_info.icon_url = icon_src_url;
         
         const add_questions = {};
         const addedForms = document.getElementsByClassName("addedForm");
         for (const addedForm of addedForms){
-            add_questions[addedForm.children[0].value] = addedForm.children[1].value;
+            if(addedForm.children[0].value == ""){
+                if(addedForm.children[1].value == ""){
+                    continue;
+                }else{
+                    alert(`回答が${addedForm.children[1].value}となっている項目の質問が空欄です。`);
+                    return 0;
+                }
+            }else if(addedForm.children[1].value == ""){
+                if(addedForm.children[0].value == ""){
+                    continue;
+                }else{
+                    alert(`${addedForm.children[0].value}の項目の回答が空欄です。`);
+                    return 0;
+                }
+            }else{
+                add_questions[addedForm.children[0].value] = addedForm.children[1].value;
+            }
         }
         member_info.add_questions = add_questions;
 
