@@ -1,15 +1,33 @@
-const testMode = false;
+const testMode = true;
 
 const BodyElement = document.getElementsByTagName('body')[0];
 const HeaderElement = document.getElementsByTagName('header')[0];
 const MainElement = document.getElementsByTagName('main')[0];
+const tickTime = 100;
 let sessionID;
 let userHash = "000000";
 let hashList = [];
 let AES_Key;
 let my_info = {};
+let isLoading = false;
 
 const evCache = [];
+
+const loadingPanels = document.createElement('div');
+const holds = [];
+loadingPanels.id = 'loading_panels';
+BodyElement.appendChild(loadingPanels);
+for (let i = 0; i<8;i++){
+    const hold = document.createElement("img");
+    holds.push(hold);
+    hold.src = `./src/img/loading/${i}.svg`;
+    hold.className = "nomal_hold";
+    hold.style.filter = `saturate(0)`;
+    hold.id = `hold${i}`;
+    loadingPanels.appendChild(hold);
+        
+}
+
 
 
 window.addEventListener('message',function(e){
@@ -101,6 +119,26 @@ function displayEditProfileButton(name,icon_url){
     HeaderElement.appendChild(user_nameElem);
 }
 
+async function loadingAnimate(){
+    let index = 0;
+        while(isLoading){
+            await new Promise((r)=> setTimeout(r,tickTime));
+            loadingPanels.style.display = "block";
+            //const date = new Date();
+            //const index = date.getTime() ;
+            /*console.log(loadElmObj.hold);
+            console.log((index/tickTime-1)%8)
+            console.log(loadElmObj.hold[(index/tickTime-1)%8]);*/
+            console.log(`${index%8},${(index+1)%8}`);
+            
+            //holds[(index+1)%8].style.display = "none";
+            //holds[(index)%8].style.display = "block";
+            holds[(index+1)%8].style.filter = "saturate(1)";
+            holds[(index)%8].style.filter = "saturate(0)";
+            index += 1;
+        }
+        loadingPanels.style.display = "none";
+}
 
 function displayLogin(){
     const trueIframeSrc = "https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec";
@@ -139,8 +177,8 @@ function displayLogin(){
         testButtons.style.position = "absolute";
         MainElement.appendChild(testButtons);
     }
-
-    
+    LoginButton.onload = () => {isLoading = false;};
+    loadingAnimate()
     MainElement.appendChild(loginGridElm);
 
 }
@@ -277,38 +315,7 @@ function displayImageEditor(user_name,icon_url){
         rotationAngle = transInfo[1];
         drawImage();
     }
-    /*icon_canvas.addEventListener('mousedown',(e)=>{
-        isDragging = true;
-        startX = e.offsetX - offsetX;
-        startY = e.offsetY - offsetY;
-        icon_canvas.style.cursor = "grabbing";
-    });
-    icon_canvas.addEventListener('touchstart',(e)=>{
-        e.preventDefault();
-        isDragging = true;
-        startX = e.touches[0].pageX - offsetX;
-        startY = e.touches[0].pageY - offsetY;
-    });
-    icon_canvas.addEventListener('mousemove',(e)=>{
-        if (isDragging){
-            offsetX = e.offsetX - startX;
-            offsetY = e.offsetY - startY;
-            drawImage();
-        }
-    });
-    icon_canvas.addEventListener('touchmove',(e)=>{
-        e.preventDefault();
-        if (isDragging){
-            offsetX = e.changedTouches[0].pageX - startX;
-            offsetY = e.changedTouches[0].pageY - startY;
-            drawImage();
-        }
-    });
-    icon_canvas.addEventListener('mouseleave',()=> {isDragging = false; icon_canvas.style.cursor = "grab";});
-    icon_canvas.addEventListener('mouseup',()=>{isDragging=false; icon_canvas.style.cursor = "grab";});
-    icon_canvas.addEventListener('touchend',()=>isDragging=false);
-    icon_canvas.addEventListener('touchcancel',()=>isDragging=false);
-    */
+    
     icon_canvas.addEventListener('wheel',(e)=>{
         e.preventDefault();
         scale += -e.deltaY*0.0005;
@@ -334,14 +341,21 @@ function displayImageEditor(user_name,icon_url){
         const formData = new FormData();
         formData.append('imageData', imageData);
 
-        
+        isLoading = true;
         if (testMode){
             const link = document.createElement('a');
             link.href = imageData;
             link.download = `${userHash}_icon.jpeg`;
             link.click();
             icon_src = `./data/test/img/${userHash}_icon.jpeg`;
-            alert("保存しました。");
+
+            setTimeout(() => {
+                alert("保存しました。");
+                isLoading = false;
+            },10000);
+
+            
+
         }else{
         try {await fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?userHash=${userHash}&sessionID=${sessionID}&postData=icon`
             ,{
@@ -356,11 +370,13 @@ function displayImageEditor(user_name,icon_url){
                 if (data.ok){
                     icon_src = data.url;
                     alert("保存しました。\n全体の編集画面からも保存してください。");
+                    isLoading = false;
                     return true;
                 }
                 else{
                     console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
                     alert(`サーバーエラーにより保存できませんでした。:${data.error}\nログインしなおしてください。`);
+                    isLoading = false;
                     return false;
                 }
             }).then((ok)=>{
@@ -373,10 +389,11 @@ function displayImageEditor(user_name,icon_url){
         }catch (e){
             console.log(`アップロードに問題がありました。:${e.message}`);
             alert(`アップロードに問題がありました。:${e.message}\nログインしなおしてください。`);
+            isLoading = false;
             displayLogin();
         }
         }
-        
+        await loadingAnimate();
     }
 
     MainElement.appendChild(confirm_button);
@@ -679,7 +696,10 @@ async function displayForm(user_name,icon_src_url){
             a.href = URL.createObjectURL(blob);
             a.download = userHash;
             a.click();
-            alert("保存しました。");
+            setTimeout(() => {
+                alert("保存しました。");
+                isLoading = false;
+            },10000);
         }else{
         const option = {
             method: 'POST',
@@ -696,14 +716,17 @@ async function displayForm(user_name,icon_src_url){
                 console.log(data);
                 if (data.ok){
                     console.log("ユーザーデータ保存");
+                    isLoading = false;
                     alert("保存しました。");
                     return true;
                 }else{
+                    isLoading = false;
                     console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
                     alert(`サーバーエラーにより保存できませんでした。:${data.error}\nログインしなおしてください。`);
                     return false;
                 }
             }).catch((e) => {
+                isLoading = false;
                 console.log(`クライアントエラーにより保存できませんでした。:${e.message}`);
                 alert(`クライアントエラーにより保存できませんでした。:${e.message}\nログインしなおしてください。`);
                 displayLogin();
@@ -715,12 +738,13 @@ async function displayForm(user_name,icon_src_url){
                 }
             });
         }catch (e){
+            isLoading = false;
             console.log(`アップロードに問題がありました。:${e.message}`);
             alert(`アップロードに問題がありました。:${e.message}\nログインしなおしてください。`);
             displayLogin();
         }
         }
-        
+        loadingAnimate();
         /*const decrypted_data = CryptoJS.AES.decrypt(encrypted_data,"testkey").toString(CryptoJS.enc.Utf8);
         console.log(decrypted_data);*/
     }

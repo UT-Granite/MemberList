@@ -396,3 +396,42 @@ footer p{
     display: block;
     text-align: center;
 }
+
+#loading_panels{
+    position: fixed;
+    z-index: 1000;
+    top: 0px;
+    left: 0px;
+    right:0px;
+    bottom:0px;
+    margin: auto;
+    display: none;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+/*#loading_panels::before{
+    content: '';
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right:0px;
+    bottom:0px;
+    margin: auto;
+    display: block;
+    background-color: rgba(0,0,0,0.8);
+    width: 100dvw;
+    height: 100dvh;
+    z-index: 500;
+    filter: blur(100px);
+}*/
+
+.nomal_hold{
+    position: fixed;
+    z-index: 1000;
+    top: 0px;
+    left: 0px;
+    right:0px;
+    bottom:0px;
+    margin: auto;
+    height: 50dvh;
+    width: 50dvw;
+}
