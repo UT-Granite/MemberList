@@ -1,9 +1,10 @@
-const testMode = true;
+const testMode = false;
 
 const BodyElement = document.getElementsByTagName('body')[0];
 const HeaderElement = document.getElementsByTagName('header')[0];
 const MainElement = document.getElementsByTagName('main')[0];
 const tickTime = 100;
+let loadingTimeID;
 let sessionID;
 let userHash = "000000";
 let hashList = [];
@@ -140,7 +141,23 @@ async function loadingAnimate(){
         loadingPanels.style.display = "none";
 }
 
+function loadingAnimate2(){
+    let index = 0;
+    loadingTimeID = setInterval(() =>{
+        loadingPanels.style.display = "block";
+            holds[(index+1)%8].style.filter = "saturate(1)";
+            holds[(index)%8].style.filter = "saturate(0)";
+            index += 1;
+    },tickTime);
+}
+
+function stopLoadingAnimate(){
+    loadingPanels.style.display = "none";
+    clearInterval(loadingTimeID);
+}
+
 function displayLogin(){
+    loadingAnimate2();
     const trueIframeSrc = "https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec";
     const testIframeSrc = "./test/loginButton.html";
     const loginGridElm = document.createElement('div');
@@ -177,8 +194,8 @@ function displayLogin(){
         testButtons.style.position = "absolute";
         MainElement.appendChild(testButtons);
     }
-    LoginButton.onload = () => {isLoading = false;};
-    loadingAnimate()
+    LoginButton.onload = stopLoadingAnimate;
+    
     MainElement.appendChild(loginGridElm);
 
 }
@@ -268,7 +285,6 @@ function displayImageEditor(user_name,icon_url){
 
     const imgElem = document.getElementById("icon_ref");
     imgElem.src = "src/img/noimage.jpg";
-  
     const context = icon_canvas.getContext("2d");
     imgElem.onload = () => {
         offsetX = 0;
@@ -341,7 +357,7 @@ function displayImageEditor(user_name,icon_url){
         const formData = new FormData();
         formData.append('imageData', imageData);
 
-        isLoading = true;
+        loadingAnimate2();
         if (testMode){
             const link = document.createElement('a');
             link.href = imageData;
@@ -351,7 +367,7 @@ function displayImageEditor(user_name,icon_url){
 
             setTimeout(() => {
                 alert("保存しました。");
-                isLoading = false;
+                stopLoadingAnimate();
             },10000);
 
             
@@ -370,13 +386,13 @@ function displayImageEditor(user_name,icon_url){
                 if (data.ok){
                     icon_src = data.url;
                     alert("保存しました。\n全体の編集画面からも保存してください。");
-                    isLoading = false;
+                    stopLoadingAnimate();
                     return true;
                 }
                 else{
                     console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
                     alert(`サーバーエラーにより保存できませんでした。:${data.error}\nログインしなおしてください。`);
-                    isLoading = false;
+                    stopLoadingAnimate();
                     return false;
                 }
             }).then((ok)=>{
@@ -389,12 +405,11 @@ function displayImageEditor(user_name,icon_url){
         }catch (e){
             console.log(`アップロードに問題がありました。:${e.message}`);
             alert(`アップロードに問題がありました。:${e.message}\nログインしなおしてください。`);
-            isLoading = false;
+            stopLoadingAnimate();
             displayLogin();
         }
         }
-        await loadingAnimate();
-    }
+    } 
 
     MainElement.appendChild(confirm_button);
 
@@ -603,25 +618,6 @@ async function displayForm(user_name,icon_src_url){
     submit_button.style.marginLeft = "auto";
     submit_button.style.marginRight = "auto";
     submit_button.onclick = async () => {
-        
-        /*const icon_upload_response = await new Promise((resolve,reject) => {
-            icon_canvas.toBlob((blob)=>{
-                if(blob){
-                    resolve(blob);
-                }else{
-                    reject();
-                }
-            },"image/jpeg",0.9)
-            }).then((iconBlob) =>{
-                    const iconData = new FormData();
-                    iconData.append("imagedata",iconBlob,"icon.jpg");
-                    return uploadGyazo(iconData,"-RGqPOwpO_YZyHkORi1N1MD87PvY9u9t2jDwOTCf_SI");
-            }).catch((e) =>{
-                return {ok:false,message:`アイコンの生成に失敗しました。:${e.message}`};
-            });**/
-
-        
-        
         if(real_name_form.value == ""){
             alert("名前を入力してください。");
             return 0;
@@ -684,7 +680,7 @@ async function displayForm(user_name,icon_src_url){
         }
         member_info.add_questions = add_questions;
 
-        
+        loadingAnimate2();
 
         const json_data = JSON.stringify(member_info);
         const encrypted_data = CryptoJS.AES.encrypt(json_data,AES_Key).toString();
@@ -698,35 +694,35 @@ async function displayForm(user_name,icon_src_url){
             a.click();
             setTimeout(() => {
                 alert("保存しました。");
-                isLoading = false;
+                stopLoadingAnimate();
             },10000);
         }else{
-        const option = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type':'application/x-www-form-urlencoded',
-            },
-            body: encrypted_data,
-        }
-        try {fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?userHash=${userHash}&sessionID=${sessionID}&postData=userData`,option)
+            const option = {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type':'application/x-www-form-urlencoded',
+                },
+                body: encrypted_data,
+            }
+            try {fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?userHash=${userHash}&sessionID=${sessionID}&postData=userData`,option)
             .then((response) => {return response.json();})
             .then((data) => {
                 console.log("data:");
                 console.log(data);
                 if (data.ok){
                     console.log("ユーザーデータ保存");
-                    isLoading = false;
+                    stopLoadingAnimate();
                     alert("保存しました。");
                     return true;
                 }else{
-                    isLoading = false;
+                    stopLoadingAnimate();
                     console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
                     alert(`サーバーエラーにより保存できませんでした。:${data.error}\nログインしなおしてください。`);
                     return false;
                 }
             }).catch((e) => {
-                isLoading = false;
+                stopLoadingAnimate();
                 console.log(`クライアントエラーにより保存できませんでした。:${e.message}`);
                 alert(`クライアントエラーにより保存できませんでした。:${e.message}\nログインしなおしてください。`);
                 displayLogin();
@@ -738,13 +734,13 @@ async function displayForm(user_name,icon_src_url){
                 }
             });
         }catch (e){
-            isLoading = false;
+            stopLoadingAnimate();
             console.log(`アップロードに問題がありました。:${e.message}`);
             alert(`アップロードに問題がありました。:${e.message}\nログインしなおしてください。`);
             displayLogin();
         }
         }
-        loadingAnimate();
+        //await loadingAnimate();
         /*const decrypted_data = CryptoJS.AES.decrypt(encrypted_data,"testkey").toString(CryptoJS.enc.Utf8);
         console.log(decrypted_data);*/
     }
