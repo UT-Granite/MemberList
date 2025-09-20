@@ -10,7 +10,6 @@ let userHash = "000000";
 let hashList = [];
 let AES_Key;
 let my_info = {};
-let isLoading = false;
 
 const evCache = [];
 
@@ -25,11 +24,8 @@ for (let i = 0; i<8;i++){
     hold.className = "nomal_hold";
     hold.style.filter = `saturate(0)`;
     hold.id = `hold${i}`;
-    loadingPanels.appendChild(hold);
-        
+    loadingPanels.appendChild(hold);    
 }
-
-
 
 window.addEventListener('message',function(e){
     switch (e.data.action){
@@ -38,15 +34,15 @@ window.addEventListener('message',function(e){
             userHash = e.data.userHash;
             hashList = e.data.hashList.split(',');
             AES_Key = e.data.aeskey;
-            console.log(`sessionID:${sessionID}`);
-            console.log(`userHash:${userHash}`);
-            console.log(`hashList:${hashList}`);
+            ////console.log(`sessionID:${sessionID}`);
+            ////console.log(`userHash:${userHash}`);
+            ////console.log(`hashList:${hashList}`);
 
             displayList_onlyMain();
             try{
                 getExistingUserInfo();
             }catch(e){
-            console.log("ファイルが見つかりませんでした。");
+            ////console.log("ファイルが見つかりませんでした。");
 
                 try{
                 fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?info=nandi&userHash=${userHash}&sessionID=${sessionID}`)
@@ -56,12 +52,11 @@ window.addEventListener('message',function(e){
                 });}catch (e){
                     let errElem = this.document.createElement('button');
                     errElem.textContent = `エラーによりユーザー情報を取得できませんでした。\nもう一度ログイン`;
-                    console.log(`fetchに失敗しました。:${data.error}`);
+                    ////console.log(`fetchに失敗しました。:${data.error}`);
                     errElem.onclick = displayLogin();
                     HeaderElement.appendChild(errElem);
                 }
             }
-
             break;
     }
 })
@@ -74,7 +69,7 @@ async function getNewUserInfo(data){
     }else{
         let errElem = this.document.createElement('button');
         errElem.textContent = `エラーによりユーザー情報を取得できませんでした。\nもう一度ログイン`;
-        console.log(`ユーザーネーム取得でエラー:${data.error}`);
+        ////console.log(`ユーザーネーム取得でエラー:${data.error}`);
         errElem.onclick = displayLogin();
         HeaderElement.appendChild(errElem);
     }
@@ -85,7 +80,6 @@ async function getExistingUserInfo(){
         return(response.text());
     }).then((data) => {
         const decrypted_data = JSON.parse(CryptoJS.AES.decrypt(data,AES_Key).toString(CryptoJS.enc.Utf8));
-        console.log(decrypted_data);
         my_info = decrypted_data;
         const user_name = decrypted_data.name;
         displayEditProfileButton(user_name,decrypted_data.icon_url);
@@ -118,27 +112,6 @@ function displayEditProfileButton(name,icon_url){
     user_nameElem.className = "material-symbols-outlined";
     user_nameElem.onclick = () => {displayForm(name,icon_url);};
     HeaderElement.appendChild(user_nameElem);
-}
-
-async function loadingAnimate(){
-    let index = 0;
-        while(isLoading){
-            await new Promise((r)=> setTimeout(r,tickTime));
-            loadingPanels.style.display = "block";
-            //const date = new Date();
-            //const index = date.getTime() ;
-            /*console.log(loadElmObj.hold);
-            console.log((index/tickTime-1)%8)
-            console.log(loadElmObj.hold[(index/tickTime-1)%8]);*/
-            console.log(`${index%8},${(index+1)%8}`);
-            
-            //holds[(index+1)%8].style.display = "none";
-            //holds[(index)%8].style.display = "block";
-            holds[(index+1)%8].style.filter = "saturate(1)";
-            holds[(index)%8].style.filter = "saturate(0)";
-            index += 1;
-        }
-        loadingPanels.style.display = "none";
 }
 
 function loadingAnimate2(){
@@ -390,7 +363,7 @@ function displayImageEditor(user_name,icon_url){
                     return true;
                 }
                 else{
-                    console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
+                    //console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
                     alert(`サーバーエラーにより保存できませんでした。:${data.error}\nログインしなおしてください。`);
                     stopLoadingAnimate();
                     return false;
@@ -403,7 +376,7 @@ function displayImageEditor(user_name,icon_url){
                 }
             })
         }catch (e){
-            console.log(`アップロードに問題がありました。:${e.message}`);
+            //console.log(`アップロードに問題がありました。:${e.message}`);
             alert(`アップロードに問題がありました。:${e.message}\nログインしなおしてください。`);
             stopLoadingAnimate();
             displayLogin();
@@ -685,7 +658,7 @@ async function displayForm(user_name,icon_src_url){
         const json_data = JSON.stringify(member_info);
         const encrypted_data = CryptoJS.AES.encrypt(json_data,AES_Key).toString();
         
-        console.log(encrypted_data);
+        //console.log(encrypted_data);
         if (testMode){
             const blob = new Blob([encrypted_data],{type:"text/plain"});
             const a = document.createElement('a');
@@ -708,22 +681,22 @@ async function displayForm(user_name,icon_src_url){
             try {fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?userHash=${userHash}&sessionID=${sessionID}&postData=userData`,option)
             .then((response) => {return response.json();})
             .then((data) => {
-                console.log("data:");
-                console.log(data);
+                //console.log("data:");
+                //console.log(data);
                 if (data.ok){
-                    console.log("ユーザーデータ保存");
+                    //console.log("ユーザーデータ保存");
                     stopLoadingAnimate();
                     alert("保存しました。");
                     return true;
                 }else{
                     stopLoadingAnimate();
-                    console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
+                    //console.log(`サーバーエラーにより保存できませんでした。:${data.error}`);
                     alert(`サーバーエラーにより保存できませんでした。:${data.error}\nログインしなおしてください。`);
                     return false;
                 }
             }).catch((e) => {
                 stopLoadingAnimate();
-                console.log(`クライアントエラーにより保存できませんでした。:${e.message}`);
+                //console.log(`クライアントエラーにより保存できませんでした。:${e.message}`);
                 alert(`クライアントエラーにより保存できませんでした。:${e.message}\nログインしなおしてください。`);
                 displayLogin();
             }).then((ok)=>{
@@ -735,14 +708,13 @@ async function displayForm(user_name,icon_src_url){
             });
         }catch (e){
             stopLoadingAnimate();
-            console.log(`アップロードに問題がありました。:${e.message}`);
+            //console.log(`アップロードに問題がありました。:${e.message}`);
             alert(`アップロードに問題がありました。:${e.message}\nログインしなおしてください。`);
             displayLogin();
         }
         }
-        //await loadingAnimate();
         /*const decrypted_data = CryptoJS.AES.decrypt(encrypted_data,"testkey").toString(CryptoJS.enc.Utf8);
-        console.log(decrypted_data);*/
+        //console.log(decrypted_data);*/
     }
     formGrid.appendChild(submit_button);
 
@@ -776,11 +748,11 @@ async function testDisplayList(){
     try{
         await getExistingUserInfo();
     }catch(e){
-        console.log("ファイルが見つかりませんでした。");
+        //console.log("ファイルが見つかりませんでした。");
         await getNewUserInfo({ok:true,name:userHash,icon:null});
     }
-    console.log("hashList:");
-    console.log(hashList);
+    //console.log("hashList:");
+    //console.log(hashList);
     displayList(userHash,my_info.icon_url);
 }
 
@@ -805,7 +777,7 @@ function addMemberPanel(memberHash,MemberPanels){
         fetch(`./data/${memberHash}`).then((response) => {
             return(response.text());
         }).then((data) => {
-            console.log(CryptoJS.AES.decrypt(data,AES_Key).toString(CryptoJS.enc.Utf8));
+            //console.log(CryptoJS.AES.decrypt(data,AES_Key).toString(CryptoJS.enc.Utf8));
             const member_info = JSON.parse(CryptoJS.AES.decrypt(data,AES_Key).toString(CryptoJS.enc.Utf8));
             const member_panel = document.createElement('div');
             const icon_and_name = document.createElement('div');
@@ -865,8 +837,6 @@ function addMemberPanel(memberHash,MemberPanels){
                 qanda_elem.textContent = `${qanda[0]}：${qanda[1]}`;
                 member_panel.appendChild(qanda_elem);
             }
-
-            //MainElement.appendChild(member_panel);
         });
     }catch(e){
     

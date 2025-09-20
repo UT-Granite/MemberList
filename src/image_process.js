@@ -13,7 +13,7 @@ async function uploadGyazo(imgData,accessToken){
             const data = await response.json();
             return {ok:true,permalink:data.permlink_url,id:data.image_id,url:data.url};
         }else{
-            console.log(response);
+            //console.log(response);
             return {ok:false,message:`画像のアップロードに失敗しました。:${response.message}`}
         }
     }catch (error){
