@@ -31,6 +31,20 @@ iframe {
     margin-bottom: 20%;
 }
 
+#privacyPolicy{
+    color: hsl(162, 100%, 66%);
+    position: relative;
+    font-size: 8px;
+    right: 0;
+    left:0;
+    display: block;
+    text-align: center;
+    text-decoration: underline;
+    cursor: pointer;
+    margin: auto;
+    margin-top: 1em;
+}
+
 body{
     position: fixed;
     top: 0px;

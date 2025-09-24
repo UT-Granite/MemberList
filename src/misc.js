@@ -142,11 +142,18 @@ function displayLogin(){
     homeLogoElm.src = "src/img/MemberListLogo.svg";
     homeLogoElm.id = "homeLogo";
     contentElm.appendChild(homeLogoElm);
+    
     let LoginButton = document.createElement('iframe');
     LoginButton.allowtransparency = "true";
     LoginButton.scrolling = "no";
     LoginButton.src = trueIframeSrc;
     contentElm.appendChild(LoginButton);
+    const jumpToPrivacyPolicy = document.createElement("a");
+    jumpToPrivacyPolicy.textContent = "プライバシーポリシー";
+    jumpToPrivacyPolicy.id = "privacyPolicy";
+    jumpToPrivacyPolicy.href = "https://sites.google.com/view/granite-memberlist-pp/%E3%83%9B%E3%83%BC%E3%83%A0";
+    jumpToPrivacyPolicy.target = "_blank";
+    contentElm.appendChild(jumpToPrivacyPolicy);
 
     clearMain();
 
