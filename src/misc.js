@@ -42,7 +42,7 @@ window.addEventListener('message',async function(e){
             try{
                 await getExistingUserInfo();
             }catch(e){
-            ////console.log("ファイルが見つかりませんでした。");
+                console.log("既存ユーザーデータが見つかりませんでした。");
 
                 try{
                 fetch(`https://script.google.com/macros/s/AKfycbxAWMDeN52QJUZbTEpnkYtVdfwZjH0SMil2o19ZkjrzNSCJ6HYlDZAv4Ld4D_HCHbqUMg/exec?info=nandi&userHash=${userHash}&sessionID=${sessionID}`)
