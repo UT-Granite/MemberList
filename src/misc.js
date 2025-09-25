@@ -27,7 +27,7 @@ for (let i = 0; i<8;i++){
     loadingPanels.appendChild(hold);    
 }
 
-window.addEventListener('message',function(e){
+window.addEventListener('message',async function(e){
     switch (e.data.action){
         case 'sessionID':
             sessionID = e.data.message;
@@ -40,7 +40,7 @@ window.addEventListener('message',function(e){
 
             displayList_onlyMain();
             try{
-                getExistingUserInfo();
+                await getExistingUserInfo();
             }catch(e){
             ////console.log("ファイルが見つかりませんでした。");
 
